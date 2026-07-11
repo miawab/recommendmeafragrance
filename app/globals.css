@@ -134,7 +134,7 @@ textarea {
   }
 }
 .mascot-bob {
-  animation: float-bob 4.5s ease-in-out infinite;
+  animation: float-bob 2.6s ease-in-out infinite;
 }
 
 @keyframes puff-fade {
@@ -147,7 +147,7 @@ textarea {
   }
 }
 .mascot-puff {
-  animation: puff-fade 2.2s ease-in-out infinite;
+  animation: puff-fade 1.3s ease-in-out infinite;
 }
 
 /* Each expression swap remounts the face group; this pops the new face in.
@@ -165,7 +165,7 @@ textarea {
 .mascot-face {
   transform-box: fill-box;
   transform-origin: center;
-  animation: face-pop 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: face-pop 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 @keyframes sparkle-drift {
@@ -180,7 +180,7 @@ textarea {
   }
 }
 .bg-sparkle {
-  animation: sparkle-drift 7s ease-in-out infinite;
+  animation: sparkle-drift 4.2s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

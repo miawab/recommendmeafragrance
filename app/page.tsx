@@ -97,7 +97,7 @@ export default function Home() {
         <Link
           href="/chat"
           aria-label="Ask the Concierge: what mood are you in?"
-          className="mascot-bob absolute -right-2 -top-6 hidden w-36 transition-transform hover:scale-105 md:block"
+          className="mascot-bob mx-auto mt-6 block w-32 transition-transform hover:scale-105 md:absolute md:-right-2 md:-top-6 md:mx-0 md:mt-0 md:w-36"
         >
           <Mascot />
         </Link>

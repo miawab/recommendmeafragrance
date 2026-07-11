@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
 import { loadFullCatalog } from "@/lib/catalog";
 import { drawBottle } from "@/lib/higherLower";
-import { addToShelf } from "@/lib/shelf";
 import type { PerfumeEntry } from "@/lib/types";
 import { useOffers } from "@/lib/useOffers";
 
@@ -57,8 +56,8 @@ export default function BlindDatePage() {
     setDecisions(next);
     if (index + 1 >= pool.length) {
       setPhase("reveal");
-      const bought = next.filter((d) => d.bought);
-      bought.forEach((d) => addToShelf(d.perfume.id, "blind"));
+      // No auto shelf-add for a swipe decision: the reveal cards below have
+      // real buy links, and clicking one is what adds it to the shelf.
       const correct = next.filter(
         (d) => d.bought === (d.perfume.tier === "famous")
       ).length;

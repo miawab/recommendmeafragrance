@@ -13,8 +13,9 @@ import {
   drawPair,
   higherSide,
   type HigherLowerAttribute,
+  type HigherLowerDifficulty,
 } from "@/lib/higherLower";
-import { addToShelf, getStreak, recordBestStreak } from "@/lib/shelf";
+import { getStreak, recordBestStreak } from "@/lib/shelf";
 import type { PerfumeEntry } from "@/lib/types";
 import { useOffers } from "@/lib/useOffers";
 
@@ -67,6 +68,7 @@ export default function HigherLowerPage() {
   const [over, setOver] = useState(false);
   const [milestoneBottle, setMilestoneBottle] = useState<PerfumeEntry | null>(null);
   const [expanded, setExpanded] = useState<{ a: boolean; b: boolean }>({ a: false, b: false });
+  const [difficulty, setDifficulty] = useState<HigherLowerDifficulty>("easy");
   const offers = useOffers();
 
   useEffect(() => {
@@ -85,12 +87,22 @@ export default function HigherLowerPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [famous, full]);
 
-  function startRound(idx: number) {
+  function startRound(idx: number, level: HigherLowerDifficulty = difficulty) {
     const attribute: HigherLowerAttribute = idx % 2 === 0 ? "year" : "price";
-    const [a, b] = drawPair(famous, full, attribute);
+    const [a, b] = drawPair(famous, full, attribute, level);
     setRound({ a, b, attribute });
     setRoundIndex(idx);
     setExpanded({ a: false, b: false });
+  }
+
+  function changeDifficulty(level: HigherLowerDifficulty) {
+    if (level === difficulty) return;
+    setDifficulty(level);
+    setOver(false);
+    setStreak(0);
+    setMilestoneBottle(null);
+    startRound(0, level);
+    track("game_start", { game: GAME, difficulty: level });
   }
 
   function toggleExpanded(side: "a" | "b") {
@@ -109,9 +121,10 @@ export default function HigherLowerPage() {
       recordBestStreak(GAME, next);
       setBest((b) => Math.max(b, next));
       if (next % 5 === 0) {
+        // Milestone reveal only, no shelf add: this game only lands on the
+        // shelf via a buy-link click, never just for playing well.
         const bottle = correctSide === "a" ? round.a : round.b;
         setMilestoneBottle(bottle);
-        addToShelf(bottle.id, GAME);
       }
     } else {
       setOver(true);
@@ -144,7 +157,7 @@ export default function HigherLowerPage() {
         </p>
       </div>
 
-      <div className="flex items-center gap-5 text-base font-bold text-ink-900">
+      <div className="flex flex-wrap items-center gap-5 text-base font-bold text-ink-900">
         <span>Streak: {streak} 🔥</span>
         <span>Best: {best}</span>
         <InfoTooltip label="How this game works">
@@ -152,9 +165,25 @@ export default function HigherLowerPage() {
           <p>
             Each round asks which of two fragrances released first, or which one costs more.
             Guess right to keep your streak going, one wrong answer ends the run. Every 5 in a
-            row unlocks a bonus reveal.
+            row unlocks a bonus reveal. Easy mode leans on famous bottles with an obvious gap,
+            hard mode pulls from the deep catalog and can come down to a single year or tier.
           </p>
         </InfoTooltip>
+        <div className="ml-auto flex gap-1.5 rounded-full border-2 border-ink-950/10 bg-cream-100 p-1">
+          {(["easy", "hard"] as HigherLowerDifficulty[]).map((level) => (
+            <button
+              key={level}
+              onClick={() => changeDifficulty(level)}
+              className={`tap-target rounded-full px-4 py-1.5 text-sm font-extrabold capitalize transition-all ${
+                difficulty === level
+                  ? "bg-amber-400 text-ink-950 shadow-card"
+                  : "text-ink-400 hover:text-ink-950"
+              }`}
+            >
+              {level}
+            </button>
+          ))}
+        </div>
       </div>
 
       {round && !over && (

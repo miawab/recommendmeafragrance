@@ -14,7 +14,7 @@ export interface NotePalette {
 export function buildNotePalette(
   catalog: PerfumeEntry[],
   notes: NoteEntry[],
-  limit = 120
+  limit: number = notes.length
 ): NotePalette {
   const layerCounts = new Map<string, { top: number; heart: number; base: number }>();
   const bump = (note: string, layer: "top" | "heart" | "base") => {

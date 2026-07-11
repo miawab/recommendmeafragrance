@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { Offer, PerfumeEntry, Surface } from "@/lib/types";
 import { track } from "@/lib/analytics";
+import { addToShelf } from "@/lib/shelf";
 
 const CJ_SID_PREFIX = "recommendmeafragrance";
 
@@ -99,7 +100,17 @@ export default function ResultCard({ perfume, surface, offer, headline, classNam
             <span className="font-normal text-ink-400">No live offer yet, here&apos;s a place to look.</span>
           )}
         </div>
-        <Button asChild size="lg" onClick={() => track("cj_click", { perfumeId: perfume.id, surface })}>
+        <Button
+          asChild
+          size="lg"
+          onClick={() => {
+            track("cj_click", { perfumeId: perfume.id, surface });
+            // A real buy link (not the no-offer search fallback) is one of
+            // the two ways a perfume lands on the shelf, alongside winning
+            // it as the answer in Scentle, Note Detective, or Build-a-Bottle.
+            if (offer) addToShelf(perfume.id, surface);
+          }}
+        >
           <a href={buyHref} target="_blank" rel="sponsored noopener">
             {offer ? "Buy now" : "Find it"}
           </a>

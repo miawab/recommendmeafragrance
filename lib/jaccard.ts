@@ -45,15 +45,71 @@ export interface Match {
   similarity: number;
 }
 
+// Descriptors perfumers commonly bolt onto a base note ("madagascar-vanilla",
+// "haitian-vetiver", "blood-orange"). With hundreds of notes in the catalog,
+// treating these as their base note lets a pick like "vanilla" still match a
+// perfume listed under a qualified variant, instead of only ever matching the
+// exact string.
+const NOTE_QUALIFIERS = new Set([
+  "madagascar", "haitian", "turkish", "bulgarian", "damask", "african", "indian",
+  "moroccan", "italian", "french", "sicilian", "calabrian", "egyptian", "somali",
+  "mysore", "virginia", "atlas", "chinese", "japanese", "wild", "tunisian",
+  "persian", "grasse", "spanish", "australian", "canadian", "tahitian", "ceylon",
+  "siamese", "cambodian", "royal", "bourbon", "sri-lankan",
+  "white", "black", "red", "green", "pink", "blood", "yellow", "golden", "blue",
+  "purple", "fresh", "dried", "candied", "roasted", "toasted", "burnt",
+]);
+
+function buildNoteVocabulary(catalog: PerfumeEntry[]): Set<string> {
+  const vocab = new Set<string>();
+  for (const p of catalog) {
+    for (const n of p.notes.top) vocab.add(n);
+    for (const n of p.notes.heart) vocab.add(n);
+    for (const n of p.notes.base) vocab.add(n);
+  }
+  return vocab;
+}
+
+/** Reduces a qualified note ("madagascar-vanilla") to its base note ("vanilla")
+ * when that base note also exists in the vocabulary, so near-duplicates count
+ * as the same note for matching purposes. Leaves unrelated notes untouched. */
+function canonicalNote(id: string, vocabulary: Set<string>): string {
+  const parts = id.split("-");
+  if (parts.length > 1) {
+    if (NOTE_QUALIFIERS.has(parts[0])) {
+      const rest = parts.slice(1).join("-");
+      if (vocabulary.has(rest)) return rest;
+    }
+    if (NOTE_QUALIFIERS.has(parts[parts.length - 1])) {
+      const rest = parts.slice(0, -1).join("-");
+      if (vocabulary.has(rest)) return rest;
+    }
+  }
+  return id;
+}
+
+function canonicalNoteSet(set: WeightedNoteSet, vocabulary: Set<string>): WeightedNoteSet {
+  return {
+    top: set.top.map((n) => canonicalNote(n, vocabulary)),
+    heart: set.heart.map((n) => canonicalNote(n, vocabulary)),
+    base: set.base.map((n) => canonicalNote(n, vocabulary)),
+  };
+}
+
 export function findClosestMatches(
   target: WeightedNoteSet,
   catalog: PerfumeEntry[],
   count: number,
   excludeId?: string
 ): Match[] {
+  const vocabulary = buildNoteVocabulary(catalog);
+  const canonTarget = canonicalNoteSet(target, vocabulary);
   const scored = catalog
     .filter((p) => p.id !== excludeId)
-    .map((p) => ({ perfume: p, similarity: weightedJaccard(target, perfumeNoteSet(p)) }))
+    .map((p) => ({
+      perfume: p,
+      similarity: weightedJaccard(canonTarget, canonicalNoteSet(perfumeNoteSet(p), vocabulary)),
+    }))
     .sort((a, b) => b.similarity - a.similarity);
   return scored.slice(0, count);
 }

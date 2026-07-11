@@ -15,7 +15,6 @@ import { Slider } from "@/components/ui/slider";
 import { track } from "@/lib/analytics";
 import { loadFullCatalog } from "@/lib/catalog";
 import { filterCandidates, pickWeighted, type RouletteDials } from "@/lib/roulette";
-import { addToShelf } from "@/lib/shelf";
 import type { PerfumeEntry } from "@/lib/types";
 import { useOffers } from "@/lib/useOffers";
 
@@ -48,7 +47,8 @@ export default function RoulettePage() {
     setPick(chosen ?? null);
     setSpinKey((k) => k + 1);
     if (chosen) {
-      addToShelf(chosen.id, "roulette");
+      // Roulette doesn't add to the shelf on spin; only a buy-link click or a
+      // win in Scentle/Note Detective/Build-a-Bottle does that.
       track("game_complete", { game: "roulette", perfumeId: chosen.id, rerolls });
     }
     setRerolls((r) => r + 1);

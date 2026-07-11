@@ -40,8 +40,12 @@ export function getAuthStore(): StringKV {
   if (redis) {
     return {
       async get(key) {
-        const v = await redis.get<string>(key);
-        return v ?? null;
+        // The Upstash SDK auto-JSON-parses on get, so a stored JSON string
+        // comes back as an object. Re-stringify so callers always receive
+        // the same string they set (they do their own JSON.parse).
+        const v = await redis.get<unknown>(key);
+        if (v == null) return null;
+        return typeof v === "string" ? v : JSON.stringify(v);
       },
       async set(key, value, exSeconds) {
         if (exSeconds) await redis.set(key, value, { ex: exSeconds });

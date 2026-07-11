@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { track } from "@/lib/analytics";
-import { getOrCreateUserId } from "@/lib/shelf";
 import type { PerfumeEntry } from "@/lib/types";
+import { useAuth } from "@/lib/useAuth";
 import { useOffers } from "@/lib/useOffers";
 
 const MAX_CHARS = 500;
@@ -31,11 +31,8 @@ export default function ChatPage() {
     null
   );
   const offers = useOffers();
+  const { username } = useAuth();
   const bottomRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    getOrCreateUserId();
-  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -72,6 +69,15 @@ export default function ChatPage() {
         setTurns([
           ...nextTurns,
           { role: "assistant", content: "Give it a moment, you're sending messages a bit fast." },
+        ]);
+        setLoading(false);
+        return;
+      }
+
+      if (res.status === 401) {
+        setTurns([
+          ...nextTurns,
+          { role: "assistant", content: "You need to be logged in to chat with me. Log in and come right back." },
         ]);
         setLoading(false);
         return;
@@ -197,19 +203,34 @@ export default function ChatPage() {
         <div ref={bottomRef} />
       </div>
 
-      <div className="flex gap-3">
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value.slice(0, MAX_CHARS))}
-          onKeyDown={(e) => e.key === "Enter" && send()}
-          placeholder="What are you in the mood for?"
-          disabled={loading}
-          className="tap-target flex-1"
-        />
-        <Button onClick={send} disabled={loading || !input.trim()} size="lg">
-          Send
-        </Button>
-      </div>
+      {username === null ? (
+        <div className="flex flex-col items-start gap-3 rounded-3xl border-2 border-ink-950/8 bg-cream-100 p-6 shadow-card">
+          <p className="text-lg font-extrabold text-ink-950">
+            The Concierge chats with members only.
+          </p>
+          <p className="text-base font-medium text-ink-400">
+            Make a free account (just a username, no email) and each account gets its own daily
+            chat budget.
+          </p>
+          <Button asChild size="lg">
+            <Link href="/login">Log in or sign up</Link>
+          </Button>
+        </div>
+      ) : (
+        <div className="flex gap-3">
+          <Input
+            value={input}
+            onChange={(e) => setInput(e.target.value.slice(0, MAX_CHARS))}
+            onKeyDown={(e) => e.key === "Enter" && send()}
+            placeholder="What are you in the mood for?"
+            disabled={loading || username === undefined}
+            className="tap-target flex-1"
+          />
+          <Button onClick={send} disabled={loading || !input.trim() || username === undefined} size="lg">
+            Send
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

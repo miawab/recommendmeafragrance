@@ -59,13 +59,14 @@ function Face({ expression }: { expression: Expression }) {
  * the logo's own sparkle) and asks the Concierge's opening question. */
 export default function Mascot({ className }: { className?: string }) {
   const [idx, setIdx] = useState(0);
+  const expression = EXPRESSIONS[idx];
 
   useEffect(() => {
-    const t = setInterval(() => setIdx((i) => (i + 1) % EXPRESSIONS.length), 2600);
-    return () => clearInterval(t);
-  }, []);
-
-  const expression = EXPRESSIONS[idx];
+    // The brand-mark sparkle lingers; the faces flip through quicker.
+    const holdMs = expression === "sparkle" ? 2600 : 1800;
+    const t = setTimeout(() => setIdx((i) => (i + 1) % EXPRESSIONS.length), holdMs);
+    return () => clearTimeout(t);
+  }, [expression]);
 
   return (
     <div className={className}>

@@ -1,4 +1,3 @@
-import crypto from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import Groq from "groq-sdk";
 import { getSessionUsername, SESSION_COOKIE } from "@/lib/auth";
@@ -15,12 +14,10 @@ const DAILY_TOKEN_BUDGET = Number(process.env.DAILY_TOKEN_BUDGET ?? 8000);
 const MAX_MESSAGE_CHARS = 500;
 const SLIDING_WINDOW = 5;
 const RATE_LIMIT_PER_MINUTE = 10;
-// Daily per-IP backstop: the uid cookie is client-controlled, so clearing it
-// would otherwise mint a fresh budget. The IP cap bounds that abuse without
-// punishing shared-IP households the way an IP-only budget would.
+// Daily per-IP backstop on top of the per-account budget: bounds abuse from
+// someone mass-creating accounts behind one IP.
 const DAILY_MESSAGES_PER_IP = 60;
 const MODEL = "llama-3.3-70b-versatile";
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // Kept deliberately short: this prompt is re-sent with every request, so its
 // length is a per-message token tax.
@@ -48,10 +45,6 @@ function tomorrowMidnightISO(): string {
   d.setUTCDate(d.getUTCDate() + 1);
   d.setUTCHours(0, 0, 0, 0);
   return d.toISOString();
-}
-
-function hashIp(ip: string): string {
-  return "ip_" + crypto.createHash("sha256").update(ip).digest("hex").slice(0, 24);
 }
 
 export async function POST(req: NextRequest) {
@@ -91,16 +84,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ locked: true, resetAt: tomorrowMidnightISO() }, { status: 429 });
   }
 
-  // Budget identity, strongest first: the authenticated account (follows the
-  // user across devices), then the anonymous uid cookie (validated as a UUID
-  // so arbitrary cookie values can't inject Redis key segments), then IP.
+  // The Concierge is account-only: each account gets its own daily budget,
+  // and anonymous visitors are prompted to log in by the client.
   const sessionUsername = await getSessionUsername(req.cookies.get(SESSION_COOKIE)?.value);
-  const rawUid = req.cookies.get("rmf_uid")?.value;
-  const userId = sessionUsername
-    ? `user:${sessionUsername.toLowerCase()}`
-    : rawUid && UUID_RE.test(rawUid)
-      ? rawUid
-      : hashIp(ip);
+  if (!sessionUsername) {
+    return NextResponse.json({ error: "login_required" }, { status: 401 });
+  }
+  const userId = `user:${sessionUsername.toLowerCase()}`;
   const date = todayUTC();
   const kv = getKV();
   const tokenKey = `tok:${userId}:${date}`;

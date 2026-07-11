@@ -127,7 +127,9 @@ export default function ScentlePage() {
       </div>
 
       <div className="flex items-center gap-5 text-base font-bold text-ink-900">
-        <span>Guess {Math.min(state.guesses.length + 1, MAX_GUESSES)} of {MAX_GUESSES}</span>
+        <span>
+          {state.guesses.length} of {MAX_GUESSES} guesses used
+        </span>
         <span>Streak: {streak.current} 🔥 (best {streak.best})</span>
         <InfoTooltip label="How to read the feedback grid">
           <p className="font-extrabold text-ink-950 mb-2">How to read your guess</p>

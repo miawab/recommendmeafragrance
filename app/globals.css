@@ -151,6 +151,24 @@ textarea {
   animation: puff-fade 2.2s ease-in-out infinite;
 }
 
+/* Each expression swap remounts the face group; this pops the new face in.
+   transform-box makes scale() originate from the face itself, not the SVG. */
+@keyframes face-pop {
+  from {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.mascot-face {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: face-pop 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
 @keyframes sparkle-drift {
   0%,
   100% {

@@ -97,7 +97,13 @@ export default function Home() {
         <p className="text-lg font-medium text-ink-400 mt-3">
           Zero-cost games plus one AI concierge, and a shelf that fills up as you go.
         </p>
-        <Mascot className="mascot-bob absolute -right-2 top-4 hidden w-32 md:block" />
+        <Link
+          href="/chat"
+          aria-label="Ask the Concierge: what mood are you in?"
+          className="mascot-bob absolute -right-2 -top-6 hidden w-36 transition-transform hover:scale-105 md:block"
+        >
+          <Mascot />
+        </Link>
       </div>
 
       <div className="flex flex-col gap-4">

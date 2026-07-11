@@ -37,19 +37,28 @@ export default function PerfumeDetailPage({ params }: PageProps) {
         <p className="text-sm font-extrabold uppercase tracking-widest text-ink-400 mb-4">
           Full note pyramid
         </p>
-        <div className="grid grid-cols-3 gap-4 text-base text-ink-800">
-          <div>
-            <p className="uppercase text-[11px] font-extrabold tracking-wider text-ink-400 mb-1.5">Top</p>
-            <p className="font-medium">{perfume.notes.top.map((n) => n.replace(/-/g, " ")).join(", ") || "—"}</p>
-          </div>
-          <div>
-            <p className="uppercase text-[11px] font-extrabold tracking-wider text-ink-400 mb-1.5">Heart</p>
-            <p className="font-medium">{perfume.notes.heart.map((n) => n.replace(/-/g, " ")).join(", ") || "—"}</p>
-          </div>
-          <div>
-            <p className="uppercase text-[11px] font-extrabold tracking-wider text-ink-400 mb-1.5">Base</p>
-            <p className="font-medium">{perfume.notes.base.map((n) => n.replace(/-/g, " ")).join(", ") || "—"}</p>
-          </div>
+        <div className="grid grid-cols-1 gap-5 text-base text-ink-800 sm:grid-cols-3 sm:gap-4">
+          {(["top", "heart", "base"] as const).map((layer) => (
+            <div key={layer}>
+              <p className="uppercase text-[11px] font-extrabold tracking-wider text-ink-400 mb-1.5">
+                {layer === "top" ? "Top" : layer === "heart" ? "Heart" : "Base"}
+              </p>
+              {perfume.notes[layer].length > 0 ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {perfume.notes[layer].map((n) => (
+                    <span
+                      key={n}
+                      className="rounded-full border border-ink-950/10 bg-cream-200 px-2.5 py-1 text-sm font-bold text-ink-900"
+                    >
+                      {n.replace(/-/g, " ")}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="font-medium text-ink-400">—</p>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 

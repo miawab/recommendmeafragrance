@@ -98,6 +98,10 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-sans-google), sans-serif;
+  /* Safety net: a single stray wide element (long unbroken text, a fixed-px
+     width) shouldn't be able to introduce horizontal scroll and make the
+     whole page feel shifted/off-center on a phone. */
+  overflow-x: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {

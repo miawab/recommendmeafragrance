@@ -27,6 +27,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "invalid_credentials" }, { status: 401 });
   }
 
+  // Per-account attempt limit on top of the per-IP one above: a distributed
+  // credential-stuffing attack rotates IPs, so the target username itself
+  // needs a cap. 10 attempts per 5 minutes stays invisible to real users.
+  const withinAccountLimit = await checkRateLimit(
+    `login:user:${username.toLowerCase()}`,
+    10,
+    300
+  );
+  if (!withinAccountLimit) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
+
   const user = await getUser(username);
   if (!user || !verifyPassword(password, user.passwordHash)) {
     return NextResponse.json({ error: "invalid_credentials" }, { status: 401 });

@@ -13,7 +13,7 @@ type GameName = "scentle" | "detective";
 interface GuessBody {
   date: string;
   gameName: GameName;
-  action: "guess" | "reveal" | "peek";
+  action: "guess" | "reveal" | "peek" | "meta";
   guessId?: string;
   revealCount?: number;
 }
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
   if (gameName !== "scentle" && gameName !== "detective") {
     return NextResponse.json({ error: "invalid_game" }, { status: 400 });
   }
-  if (action !== "guess" && action !== "reveal" && action !== "peek") {
+  if (action !== "guess" && action !== "reveal" && action !== "peek" && action !== "meta") {
     return NextResponse.json({ error: "invalid_action" }, { status: 400 });
   }
 
@@ -58,6 +58,20 @@ export async function POST(req: NextRequest) {
     }
     const notes = getRevealedNotes(answer, Number(revealCount ?? 0));
     return NextResponse.json({ notes });
+  }
+
+  if (action === "meta") {
+    if (gameName !== "detective") {
+      return NextResponse.json({ error: "invalid_action" }, { status: 400 });
+    }
+    // Full Info mode hints: metadata alone (no id/name/brand) doesn't hand
+    // over the answer, many perfumes share a year/gender/price/concentration.
+    return NextResponse.json({
+      year: answer.year,
+      gender: answer.gender,
+      priceTier: answer.priceTier,
+      concentration: answer.concentration,
+    });
   }
 
   // action === "guess"

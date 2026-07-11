@@ -24,7 +24,7 @@ interface ResultCardProps {
 // (cheaper = lighter tint, pricier = darker chocolate), not distinct hues.
 const PRICE_TIER: Record<number, { label: string; classes: string; iconTone: string }> = {
   1: { label: "Budget", classes: "bg-cream-300 text-ink-950 border-ink-950/15", iconTone: "bg-cream-300 text-ink-950" },
-  2: { label: "Mid", classes: "bg-amber-200 text-ink-950 border-ink-950/15", iconTone: "bg-amber-200 text-ink-950" },
+  2: { label: "Mid-Range", classes: "bg-amber-200 text-ink-950 border-ink-950/15", iconTone: "bg-amber-200 text-ink-950" },
   3: { label: "Designer", classes: "bg-amber-400 text-white border-transparent", iconTone: "bg-amber-400 text-white" },
   4: { label: "Niche", classes: "bg-ink-400 text-white border-transparent", iconTone: "bg-ink-400 text-cream-100" },
   5: { label: "Ultra", classes: "bg-ink-950 text-cream-100 border-transparent", iconTone: "bg-ink-950 text-cream-100" },
@@ -72,7 +72,7 @@ export default function ResultCard({ perfume, surface, offer, headline, classNam
         <Badge className={`shrink-0 ${tier.classes}`}>{tier.label}</Badge>
       </div>
 
-      <div className="mt-5 grid grid-cols-3 gap-3 text-sm text-ink-800">
+      <div className="mt-5 grid grid-cols-1 gap-3 text-sm text-ink-800 sm:grid-cols-3">
         <NotesColumn label="Top" notes={perfume.notes.top} />
         <NotesColumn label="Heart" notes={perfume.notes.heart} />
         <NotesColumn label="Base" notes={perfume.notes.base} />

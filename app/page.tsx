@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Dices, EyeOff, FlaskConical, Search, Sparkles, SprayCan, TrendingUp, Trophy } from "lucide-react";
+import { Dices, FlaskConical, Heart, Search, Sparkles, SprayCan, TrendingUp, Trophy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import GameIcon from "@/components/GameIcon";
 import { loadCoreCatalog } from "@/lib/catalog";
@@ -37,7 +37,7 @@ const GAME_GRID = [
   { href: "/build", label: "Build-a-Bottle", blurb: "Pick notes, invent a scent.", icon: FlaskConical, tone: "bg-amber-400 text-white" },
   { href: "/higher-lower", label: "Higher or Lower", blurb: "Keep the streak alive.", icon: TrendingUp, tone: "bg-ink-950 text-cream-100" },
   { href: "/roulette", label: "Scent Roulette", blurb: "Set the dials, pull the lever.", icon: Dices, tone: "bg-ink-400 text-cream-100" },
-  { href: "/blind-buy", label: "Blind Buy Simulator", blurb: "Notes only. Trust your nose.", icon: EyeOff, tone: "bg-amber-400 text-white" },
+  { href: "/blind-date", label: "Blind Date", blurb: "Swipe to buy or skip. Trust your nose.", icon: Heart, tone: "bg-amber-400 text-white" },
 ];
 
 export default function Home() {
@@ -51,7 +51,8 @@ export default function Home() {
     const date = todayUTC();
     const state: Record<string, boolean> = {};
     for (const g of DAILY_GAMES) {
-      state[g.key] = !!getHistory(g.key)[date];
+      const entry = getHistory(g.key)[date] as { completed?: boolean } | undefined;
+      state[g.key] = !!entry?.completed;
     }
     setCompletedToday(state);
   }, []);
@@ -64,7 +65,7 @@ export default function Home() {
         <p className="text-sm font-extrabold uppercase tracking-widest text-amber-600">
           six games. one nose.
         </p>
-        <h1 className="font-display text-5xl sm:text-6xl font-extrabold leading-[1.05] text-ink-950 mt-2">
+        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] sm:leading-[1.05] text-ink-950 mt-2">
           play a game, find your next fragrance.
         </h1>
         <p className="text-lg font-medium text-ink-400 mt-3">

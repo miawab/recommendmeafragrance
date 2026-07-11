@@ -14,7 +14,7 @@ import { useOffers } from "@/lib/useOffers";
 
 type Layer = "top" | "heart" | "base";
 const LAYER_LABEL: Record<Layer, string> = { top: "Top", heart: "Heart", base: "Base" };
-const MAX_PER_LAYER = 2;
+const MIN_PER_LAYER = 1;
 
 export default function BuildABottlePage() {
   const [catalog, setCatalog] = useState<PerfumeEntry[]>([]);
@@ -46,15 +46,14 @@ export default function BuildABottlePage() {
       if (current.includes(note)) {
         return { ...prev, [layer]: current.filter((n) => n !== note) };
       }
-      if (current.length >= MAX_PER_LAYER) return prev;
       return { ...prev, [layer]: [...current, note] };
     });
   }
 
   const ready =
-    selected.top.length === MAX_PER_LAYER &&
-    selected.heart.length === MAX_PER_LAYER &&
-    selected.base.length === MAX_PER_LAYER;
+    selected.top.length >= MIN_PER_LAYER &&
+    selected.heart.length >= MIN_PER_LAYER &&
+    selected.base.length >= MIN_PER_LAYER;
 
   function invent() {
     const matches = findClosestMatches(selected, catalog, 3);
@@ -78,14 +77,16 @@ export default function BuildABottlePage() {
           <InfoTooltip label="How matching works">
             <p className="font-extrabold text-ink-950 mb-2">How we find your match</p>
             <p>
-              We compare your 6 notes against every fragrance in the catalog. Base notes count
+              We compare your notes against every fragrance in the catalog. Base notes count
               1.5x as much as top or heart notes, since they carry a scent&apos;s identity the
-              most. The closest match is what you &quot;invented,&quot; plus two runners-up.
+              most. The closest match is what you &quot;invented,&quot; plus two runners-up. Pick
+              as many notes as you like per section, the more you pick, the more precise the
+              match.
             </p>
           </InfoTooltip>
         </div>
         <p className="text-lg font-medium text-ink-400 mt-2">
-          Pick 2 top, 2 heart, and 2 base notes. We&apos;ll tell you what you just invented.
+          Pick at least 1 top, 1 heart, and 1 base note. We&apos;ll tell you what you just invented.
         </p>
       </div>
 
@@ -94,7 +95,7 @@ export default function BuildABottlePage() {
           {(["top", "heart", "base"] as Layer[]).map((layer) => (
             <div key={layer}>
               <p className="mb-3 text-sm font-extrabold uppercase tracking-widest text-ink-400">
-                {LAYER_LABEL[layer]} notes ({selected[layer].length}/{MAX_PER_LAYER})
+                {LAYER_LABEL[layer]} notes ({selected[layer].length} selected)
               </p>
               <div className="flex flex-wrap gap-2.5 max-h-44 overflow-y-auto pr-1">
                 {palette[layer].map((note) => {

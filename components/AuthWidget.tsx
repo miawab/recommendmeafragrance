@@ -1,48 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/useAuth";
 
+/** Desktop-only (rendered inside SiteHeader's `hidden sm:flex` nav). Mobile
+ * gets the same auth actions inside MobileNav's menu instead, there's no
+ * room in the mobile header for a standalone widget. */
 export default function AuthWidget() {
-  const [username, setUsername] = useState<string | null | undefined>(undefined);
-  const router = useRouter();
-
-  useEffect(() => {
-    fetch("/api/auth/me")
-      .then((r) => r.json())
-      .then((data: { username: string | null }) => setUsername(data.username))
-      .catch(() => setUsername(null));
-  }, []);
-
-  async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" });
-    setUsername(null);
-    router.push("/");
-    router.refresh();
-  }
+  const { username, logout } = useAuth();
 
   if (username === undefined) {
-    return <div className="h-9 w-20 rounded-full bg-cream-200 animate-pulse" />;
+    return <div className="h-9 w-20 shrink-0 rounded-full bg-cream-200 animate-pulse" />;
   }
 
   if (username === null) {
     return (
-      <Button asChild variant="ghost" size="sm" className="rounded-full font-extrabold lowercase">
+      <Button asChild variant="ghost" size="sm" className="shrink-0 rounded-full px-4 font-extrabold lowercase">
         <Link href="/login">log in</Link>
       </Button>
     );
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <span className="inline-flex items-center gap-1.5 rounded-full bg-cream-200 px-3 py-1.5 text-sm font-extrabold text-ink-950">
-        <User className="h-4 w-4" strokeWidth={2.5} />
-        {username}
+    <div className="flex shrink-0 items-center gap-2">
+      <span
+        className="inline-flex items-center gap-1.5 rounded-full bg-cream-200 px-3 py-1.5 text-sm font-extrabold text-ink-950"
+        title={username}
+      >
+        <User className="h-4 w-4 shrink-0" strokeWidth={2.5} />
+        <span className="max-w-[8ch] truncate">{username}</span>
       </span>
-      <Button variant="ghost" size="sm" className="rounded-full font-extrabold lowercase" onClick={logout}>
+      <Button
+        variant="ghost"
+        size="sm"
+        aria-label="Log out"
+        className="rounded-full px-4 font-extrabold lowercase"
+        onClick={logout}
+      >
         log out
       </Button>
     </div>

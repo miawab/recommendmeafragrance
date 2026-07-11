@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
-import { buildOffersFromFeed, csvRowsToFeedRows, parseCsv } from "@/lib/feedSync";
+import { buildOffersFromFeed, fetchCjAdvertiserProducts } from "@/lib/feedSync";
 import type { MatchedOffer } from "@/lib/offerMatching";
 import { getRawRedis } from "@/lib/redis";
 import { getFullCatalog } from "@/lib/serverCatalog";
@@ -20,13 +20,13 @@ function loadOverrides(): Record<string, Partial<MatchedOffer>> {
 }
 
 /**
- * Daily Vercel Cron target. Downloads each CJ feed URL, matches products against
- * the catalog, and persists the result. Vercel functions have an ephemeral
- * filesystem, so instead of writing back to /public we store the offers blob in
- * Upstash Redis (already a project dependency for chat token metering) under
- * OFFERS_REDIS_KEY. /api/offers reads from there first, falling back to the
- * static /public/data/offers.json seed when Redis has nothing yet. This avoids
- * bringing in a second storage product (e.g. Vercel Blob) for one JSON blob.
+ * Daily Vercel Cron target. Queries CJ's Product Feed GraphQL API for each
+ * configured advertiser, matches products against the catalog, and persists
+ * the result. Vercel functions have an ephemeral filesystem, so instead of
+ * writing back to /public we store the offers blob in Upstash Redis (already
+ * a project dependency for chat token metering) under OFFERS_REDIS_KEY.
+ * /api/offers reads from there first, falling back to the static
+ * /public/data/offers.json seed when Redis has nothing yet.
  */
 export async function GET(req: NextRequest) {
   const auth = req.headers.get("authorization");
@@ -34,14 +34,21 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const feedUrls = (process.env.CJ_FEED_URLS ?? "")
+  const apiToken = process.env.CJ_API_TOKEN;
+  const companyId = process.env.CJ_COMPANY_ID;
+  const pid = process.env.CJ_PID;
+  const advertiserIds = (process.env.CJ_ADVERTISER_IDS ?? "")
     .split(",")
-    .map((u) => u.trim())
+    .map((id) => id.trim())
     .filter(Boolean);
 
-  if (feedUrls.length === 0) {
+  if (!apiToken || !companyId || !pid || advertiserIds.length === 0) {
     return NextResponse.json(
-      { ok: true, message: "No CJ_FEED_URLS configured yet, nothing to sync." },
+      {
+        ok: true,
+        message:
+          "CJ_API_TOKEN/CJ_COMPANY_ID/CJ_PID/CJ_ADVERTISER_IDS not fully configured yet, nothing to sync.",
+      },
       { status: 200 }
     );
   }
@@ -51,19 +58,17 @@ export async function GET(req: NextRequest) {
   let combinedOffers: Record<string, MatchedOffer> = {};
   const errors: string[] = [];
 
-  for (const url of feedUrls) {
+  for (const advertiserId of advertiserIds) {
     try {
-      const res = await fetch(url);
-      if (!res.ok) {
-        errors.push(`${url}: HTTP ${res.status}`);
-        continue;
-      }
-      const text = await res.text();
-      const feed = csvRowsToFeedRows(parseCsv(text));
+      const feed = await fetchCjAdvertiserProducts(advertiserId, {
+        apiToken,
+        companyId,
+        pid,
+      });
       const offers = buildOffersFromFeed(catalog, feed);
       combinedOffers = { ...combinedOffers, ...offers };
     } catch (err) {
-      errors.push(`${url}: ${err instanceof Error ? err.message : "fetch failed"}`);
+      errors.push(`advertiser ${advertiserId}: ${err instanceof Error ? err.message : "fetch failed"}`);
     }
   }
 

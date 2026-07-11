@@ -17,6 +17,17 @@ const GAME = "detective";
 const START_SCORE = 1000;
 const REVEAL_COST = 100;
 const WRONG_GUESS_COST = 50;
+const MODE_KEY = "rmf:detective:mode";
+const PRICE_LABELS = ["", "Budget", "Mid-Range", "Designer", "Niche", "Ultra"];
+
+type InfoMode = "basic" | "full";
+
+interface AnswerMeta {
+  year: number | null;
+  gender: string;
+  priceTier: number;
+  concentration: string;
+}
 
 interface DayState {
   revealCount: number;
@@ -43,6 +54,8 @@ export default function NoteDetectivePage() {
   const date = useMemo(() => todayUTC(), []);
   const [catalog, setCatalog] = useState<PerfumeEntry[]>([]);
   const [state, setState] = useState<DayState>(EMPTY_STATE);
+  const [mode, setMode] = useState<InfoMode>("basic");
+  const [meta, setMeta] = useState<AnswerMeta | null>(null);
   const offers = useOffers();
 
   useEffect(() => {
@@ -50,7 +63,23 @@ export default function NoteDetectivePage() {
     const saved = getHistory(GAME)[date] as DayState | undefined;
     if (saved) setState(saved);
     else track("game_start", { game: GAME, date });
+
+    const savedMode = window.localStorage.getItem(MODE_KEY);
+    if (savedMode === "basic" || savedMode === "full") setMode(savedMode);
+
+    fetch("/api/guess", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ date, gameName: GAME, action: "meta" }),
+    })
+      .then((r) => r.json())
+      .then((data: AnswerMeta) => setMeta(data));
   }, [date]);
+
+  function changeMode(next: InfoMode) {
+    setMode(next);
+    window.localStorage.setItem(MODE_KEY, next);
+  }
 
   useEffect(() => {
     if (state.completed && !state.won && !state.answerId) {
@@ -166,6 +195,58 @@ export default function NoteDetectivePage() {
           </ul>
         </InfoTooltip>
       </div>
+
+      <div className="flex items-center gap-2">
+        <div className="inline-flex rounded-full bg-cream-200 p-1">
+          <button
+            type="button"
+            onClick={() => changeMode("basic")}
+            className={`rounded-full px-4 py-1.5 text-sm font-extrabold transition-colors ${
+              mode === "basic" ? "bg-ink-950 text-cream-100" : "text-ink-900"
+            }`}
+          >
+            Basic
+          </button>
+          <button
+            type="button"
+            onClick={() => changeMode("full")}
+            className={`rounded-full px-4 py-1.5 text-sm font-extrabold transition-colors ${
+              mode === "full" ? "bg-ink-950 text-cream-100" : "text-ink-900"
+            }`}
+          >
+            Full Info
+          </button>
+        </div>
+        <InfoTooltip label="What Basic and Full Info modes show">
+          <p className="font-extrabold text-ink-950 mb-2">Info modes</p>
+          <p>
+            <strong>Basic</strong> shows the release year alongside your revealed notes.{" "}
+            <strong>Full Info</strong> also shows gender, price tier, and concentration, extra
+            hints that make guessing easier.
+          </p>
+        </InfoTooltip>
+      </div>
+
+      {meta && (
+        <div className="flex flex-wrap gap-2">
+          <span className="rounded-full border-2 border-ink-950/10 bg-cream-100 px-3 py-1.5 text-sm font-bold text-ink-900">
+            Year: {meta.year ?? "Unknown"}
+          </span>
+          {mode === "full" && (
+            <>
+              <span className="rounded-full border-2 border-ink-950/10 bg-cream-100 px-3 py-1.5 text-sm font-bold text-ink-900 capitalize">
+                {meta.gender}
+              </span>
+              <span className="rounded-full border-2 border-ink-950/10 bg-cream-100 px-3 py-1.5 text-sm font-bold text-ink-900">
+                {PRICE_LABELS[meta.priceTier] ?? "Mid-Range"}
+              </span>
+              <span className="rounded-full border-2 border-ink-950/10 bg-cream-100 px-3 py-1.5 text-sm font-bold text-ink-900 capitalize">
+                {meta.concentration}
+              </span>
+            </>
+          )}
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-2.5 min-h-[3rem]">
         {state.revealedNotes.length === 0 && (

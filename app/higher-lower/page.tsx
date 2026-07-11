@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import Celebration from "@/components/Celebration";
 import InfoTooltip from "@/components/InfoTooltip";
 import ResultCard from "@/components/ResultCard";
@@ -32,11 +33,28 @@ function correctSideFor(a: PerfumeEntry, b: PerfumeEntry, attribute: HigherLower
   return attribute === "year" ? (hs === "a" ? "b" : "a") : hs;
 }
 
+const PRICE_LABELS = ["", "Budget", "Mid-Range", "Designer", "Niche", "Ultra"];
+
 function label(p: PerfumeEntry, attribute: HigherLowerAttribute): string {
   const v = attributeValue(p, attribute);
   if (attribute === "year") return v == null ? "unknown" : String(v);
-  const names = ["", "Budget", "Mid", "Designer", "Niche", "Ultra"];
-  return v == null ? "unknown" : names[v] ?? String(v);
+  return v == null ? "unknown" : PRICE_LABELS[v] ?? String(v);
+}
+
+/** Extra info shown in the expand panel: whichever of year/price ISN'T this
+ * round's question, plus gender and concentration. Never includes the
+ * attribute being guessed, so expanding never spoils the round. */
+function extraInfo(p: PerfumeEntry, attribute: HigherLowerAttribute) {
+  const rows: { label: string; value: string }[] = [];
+  if (attribute !== "year") {
+    rows.push({ label: "Year", value: p.year == null ? "Unknown" : String(p.year) });
+  }
+  if (attribute !== "price") {
+    rows.push({ label: "Price tier", value: PRICE_LABELS[p.priceTier] ?? "Mid-Range" });
+  }
+  rows.push({ label: "Gender", value: p.gender });
+  rows.push({ label: "Concentration", value: p.concentration });
+  return rows;
 }
 
 export default function HigherLowerPage() {
@@ -48,6 +66,7 @@ export default function HigherLowerPage() {
   const [best, setBest] = useState(0);
   const [over, setOver] = useState(false);
   const [milestoneBottle, setMilestoneBottle] = useState<PerfumeEntry | null>(null);
+  const [expanded, setExpanded] = useState<{ a: boolean; b: boolean }>({ a: false, b: false });
   const offers = useOffers();
 
   useEffect(() => {
@@ -71,6 +90,11 @@ export default function HigherLowerPage() {
     const [a, b] = drawPair(famous, full, attribute);
     setRound({ a, b, attribute });
     setRoundIndex(idx);
+    setExpanded({ a: false, b: false });
+  }
+
+  function toggleExpanded(side: "a" | "b") {
+    setExpanded((prev) => ({ ...prev, [side]: !prev[side] }));
   }
 
   function handleSelect(side: "a" | "b") {
@@ -149,11 +173,21 @@ export default function HigherLowerPage() {
                     ? "border-ink-400"
                     : "border-ink-950/10";
               return (
-                <button
+                <div
                   key={side}
+                  role="button"
+                  tabIndex={revealed ? -1 : 0}
+                  aria-disabled={revealed}
                   onClick={() => handleSelect(side)}
-                  disabled={revealed}
-                  className={`tap-target rounded-3xl border-[3px] ${tone} bg-cream-100 p-6 text-left shadow-card active:scale-95 transition-all`}
+                  onKeyDown={(e) => {
+                    if (!revealed && (e.key === "Enter" || e.key === " ")) {
+                      e.preventDefault();
+                      handleSelect(side);
+                    }
+                  }}
+                  className={`tap-target rounded-3xl border-[3px] ${tone} bg-cream-100 p-6 text-left shadow-card transition-all ${
+                    revealed ? "" : "active:scale-95 cursor-pointer"
+                  }`}
                 >
                   <p className="text-xs font-extrabold uppercase tracking-wider text-ink-400">
                     {p.brand}
@@ -164,7 +198,35 @@ export default function HigherLowerPage() {
                       {label(p, round.attribute)}
                     </p>
                   )}
-                </button>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleExpanded(side);
+                    }}
+                    className="tap-target mt-3 flex items-center gap-1 text-sm font-bold text-ink-400 hover:text-ink-950 transition-colors"
+                  >
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform ${expanded[side] ? "rotate-180" : ""}`}
+                      strokeWidth={2.5}
+                    />
+                    {expanded[side] ? "Less info" : "More info"}
+                  </button>
+
+                  {expanded[side] && (
+                    <div className="mt-3 flex flex-col gap-1.5 animate-pop-in">
+                      {extraInfo(p, round.attribute).map((row) => (
+                        <p key={row.label} className="text-sm font-medium text-ink-800 capitalize">
+                          <span className="font-extrabold text-ink-400 uppercase text-xs tracking-wider not-italic">
+                            {row.label}:
+                          </span>{" "}
+                          {row.value}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </div>

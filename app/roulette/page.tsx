@@ -21,7 +21,7 @@ import { useOffers } from "@/lib/useOffers";
 
 const SEASONS = ["any", "spring", "summer", "fall", "winter", "all-season"];
 const OCCASIONS = ["any", "office", "date", "night-out", "gym", "everyday"];
-const PRICE_LABELS = ["", "Budget", "Mid", "Designer", "Niche", "Ultra"];
+const PRICE_LABELS = ["", "Budget", "Mid-Range", "Designer", "Niche", "Ultra"];
 
 export default function RoulettePage() {
   const [catalog, setCatalog] = useState<PerfumeEntry[]>([]);
@@ -66,7 +66,7 @@ export default function RoulettePage() {
       </div>
 
       <div className="grid grid-cols-2 gap-5">
-        <label className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           <span className="text-sm font-extrabold uppercase tracking-widest text-ink-400">Season</span>
           <Select
             value={dials.season}
@@ -83,9 +83,9 @@ export default function RoulettePage() {
               ))}
             </SelectContent>
           </Select>
-        </label>
+        </div>
 
-        <label className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           <span className="text-sm font-extrabold uppercase tracking-widest text-ink-400">Occasion</span>
           <Select
             value={dials.occasion}
@@ -102,15 +102,15 @@ export default function RoulettePage() {
               ))}
             </SelectContent>
           </Select>
-        </label>
+        </div>
 
-        <label className="col-span-2 flex flex-col gap-3">
+        <div className="col-span-2 flex flex-col gap-3">
           <span className="flex items-center gap-1.5 text-sm font-extrabold uppercase tracking-widest text-ink-400">
             Budget: {PRICE_LABELS[dials.minPrice]} to {PRICE_LABELS[dials.maxPrice]}
             <InfoTooltip label="What the price tiers mean">
               <p className="font-extrabold text-ink-950 mb-2">Price tiers</p>
               <p>
-                Budget (under $50), Mid ($50&ndash;100), Designer ($100&ndash;170), Niche
+                Budget (under $50), Mid-Range ($50&ndash;100), Designer ($100&ndash;170), Niche
                 ($170&ndash;300), Ultra (over $300). This is the perceived class of the bottle,
                 not a live price, real prices show up on the result card when we have one.
               </p>
@@ -123,9 +123,9 @@ export default function RoulettePage() {
             value={[dials.minPrice, dials.maxPrice]}
             onValueChange={([minPrice, maxPrice]) => setDials((d) => ({ ...d, minPrice, maxPrice }))}
           />
-        </label>
+        </div>
 
-        <label className="col-span-2 flex flex-col gap-3">
+        <div className="col-span-2 flex flex-col gap-3">
           <span className="flex items-center gap-1.5 text-sm font-extrabold uppercase tracking-widest text-ink-400">
             Surprise me: {dials.chaos === 0 ? "famous only" : `${dials.chaos}% deep cuts`}
             <InfoTooltip label="What surprise me does">
@@ -144,7 +144,7 @@ export default function RoulettePage() {
             value={[dials.chaos]}
             onValueChange={([chaos]) => setDials((d) => ({ ...d, chaos }))}
           />
-        </label>
+        </div>
       </div>
 
       <Button onClick={spin} disabled={catalog.length === 0} size="xl" className="self-start">

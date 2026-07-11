@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import InfoTooltip from "@/components/InfoTooltip";
 import ResultCard from "@/components/ResultCard";
+import SwipeCard from "@/components/SwipeCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
@@ -13,7 +15,7 @@ import type { PerfumeEntry } from "@/lib/types";
 import { useOffers } from "@/lib/useOffers";
 
 const ROUND_SIZE = 10;
-const PRICE_LABELS = ["", "Budget", "Mid", "Designer", "Niche", "Ultra"];
+const PRICE_LABELS = ["", "Budget", "Mid-Range", "Designer", "Niche", "Ultra"];
 
 interface Decision {
   perfume: PerfumeEntry;
@@ -34,7 +36,7 @@ function drawRound(famous: PerfumeEntry[], full: PerfumeEntry[]): PerfumeEntry[]
   return chosen;
 }
 
-export default function BlindBuyPage() {
+export default function BlindDatePage() {
   const [pool, setPool] = useState<PerfumeEntry[]>([]);
   const [index, setIndex] = useState(0);
   const [decisions, setDecisions] = useState<Decision[]>([]);
@@ -80,6 +82,17 @@ export default function BlindBuyPage() {
   }
 
   const current = pool[index];
+
+  useEffect(() => {
+    if (phase !== "playing" || !current) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "ArrowLeft") decide(false);
+      else if (e.key === "ArrowRight") decide(true);
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, current]);
 
   if (phase === "reveal") {
     const correct = decisions.filter((d) => d.bought === (d.perfume.tier === "famous")).length;
@@ -128,11 +141,23 @@ export default function BlindBuyPage() {
   return (
     <div className="flex flex-col gap-7">
       <div>
-        <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-ink-950">
-          Blind Buy Simulator
-        </h1>
+        <div className="flex items-center gap-2">
+          <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-ink-950">
+            Blind Date
+          </h1>
+          <InfoTooltip label="How to decide">
+            <p className="font-extrabold text-ink-950 mb-2">Swipe to decide</p>
+            <p>
+              On touch devices, swipe the card right to buy it, left to skip it. On desktop, use
+              the arrow buttons on either side of the card, or drag it with your mouse.
+            </p>
+          </InfoTooltip>
+        </div>
         <p className="text-lg font-medium text-ink-400 mt-2">
           Just notes and price. No names, no brands. Trust your nose.
+        </p>
+        <p className="text-sm font-bold text-ink-400 mt-1">
+          Swipe right (or click →) to buy. Swipe left (or click ←) to skip.
         </p>
       </div>
 
@@ -141,39 +166,64 @@ export default function BlindBuyPage() {
       </p>
 
       {current && (
-        <div key={current.id} className="rounded-3xl border-2 border-ink-950/8 bg-cream-100 p-6 shadow-card-lg animate-pop-in">
-          <div className="flex justify-end">
-            <Badge className="bg-amber-100 text-amber-700 border-amber-300">
-              {PRICE_LABELS[current.priceTier] ?? "Mid"}
-            </Badge>
-          </div>
-          <div className="mt-3 grid grid-cols-3 gap-3 text-sm text-ink-800">
-            {(["top", "heart", "base"] as const).map((layer) => (
-              <div key={layer}>
-                <p className="uppercase text-[11px] font-extrabold tracking-wider text-ink-400 mb-1.5">
-                  {layer === "top" ? "Top" : layer === "heart" ? "Heart" : "Base"}
-                </p>
-                {current.notes[layer].length > 0 ? (
-                  <div className="flex flex-wrap gap-1">
-                    {current.notes[layer].map((n) => (
-                      <span
-                        key={n}
-                        className="rounded-full border border-ink-950/10 bg-cream-200 px-2 py-0.5 text-xs font-bold text-ink-900"
-                      >
-                        {n.replace(/-/g, " ")}
-                      </span>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="font-medium text-ink-400">—</p>
-                )}
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={() => decide(false)}
+            variant="outline"
+            size="icon"
+            aria-label="Skip"
+            className="hidden shrink-0 rounded-full sm:inline-flex"
+          >
+            <ChevronLeft className="h-6 w-6" strokeWidth={2.5} />
+          </Button>
+
+          <div className="min-w-0 flex-1">
+            <SwipeCard key={current.id} onSwipeLeft={() => decide(false)} onSwipeRight={() => decide(true)}>
+              <div className="rounded-3xl border-2 border-ink-950/8 bg-cream-100 p-6 shadow-card-lg animate-pop-in">
+                <div className="flex justify-end">
+                  <Badge className="bg-amber-100 text-amber-700 border-amber-300">
+                    {PRICE_LABELS[current.priceTier] ?? "Mid-Range"}
+                  </Badge>
+                </div>
+                <div className="mt-3 grid grid-cols-1 gap-3 text-sm text-ink-800 sm:grid-cols-3">
+                  {(["top", "heart", "base"] as const).map((layer) => (
+                    <div key={layer}>
+                      <p className="uppercase text-[11px] font-extrabold tracking-wider text-ink-400 mb-1.5">
+                        {layer === "top" ? "Top" : layer === "heart" ? "Heart" : "Base"}
+                      </p>
+                      {current.notes[layer].length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {current.notes[layer].map((n) => (
+                            <span
+                              key={n}
+                              className="rounded-full border border-ink-950/10 bg-cream-200 px-2 py-0.5 text-xs font-bold text-ink-900"
+                            >
+                              {n.replace(/-/g, " ")}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="font-medium text-ink-400">—</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
+            </SwipeCard>
           </div>
+
+          <Button
+            onClick={() => decide(true)}
+            size="icon"
+            aria-label="Buy"
+            className="hidden shrink-0 rounded-full sm:inline-flex"
+          >
+            <ChevronRight className="h-6 w-6" strokeWidth={2.5} />
+          </Button>
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 sm:hidden">
         <Button onClick={() => decide(false)} variant="outline" size="xl">
           Skip
         </Button>

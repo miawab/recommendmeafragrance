@@ -104,20 +104,27 @@ export default function ShelfPage() {
           const { streak, history } = progress[key] ?? { streak: EMPTY_STREAK, history: {} };
           return (
             <div key={key} className="rounded-2xl border-2 border-ink-950/8 bg-cream-100 p-5 shadow-card">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                 <span className="text-lg font-extrabold text-ink-950">{label}</span>
                 <span className="text-sm font-bold text-ink-400">
                   {streak.current} 🔥 current, {streak.best} best
                 </span>
               </div>
-              <div className="mt-4 flex gap-1.5">
-                {dates.map((d) => (
-                  <span
-                    key={d}
-                    title={d}
-                    className={`h-5 w-5 rounded-md ${history[d] ? "bg-amber-400" : "bg-ink-950/10"}`}
-                  />
-                ))}
+              {/* h-4/gap-1 on mobile (not h-5/gap-1.5): 14 squares at the
+                  larger size need ~358px, more than fits inside this card on
+                  a 390px phone after container + card padding, and would
+                  silently overflow the rounded border. */}
+              <div className="mt-4 flex gap-1 sm:gap-1.5">
+                {dates.map((d) => {
+                  const entry = history[d] as { completed?: boolean } | undefined;
+                  return (
+                    <span
+                      key={d}
+                      title={d}
+                      className={`h-4 w-4 shrink-0 rounded-md sm:h-5 sm:w-5 ${entry?.completed ? "bg-amber-400" : "bg-ink-950/10"}`}
+                    />
+                  );
+                })}
               </div>
             </div>
           );

@@ -1,5 +1,6 @@
 "use client";
 
+import { schedulePush } from "./syncClient";
 import type { Surface } from "./types";
 
 const SHELF_KEY = "rmf:shelf";
@@ -32,6 +33,8 @@ function readJson<T>(key: string, fallback: T): T {
 function writeJson<T>(key: string, value: T): void {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(key, JSON.stringify(value));
+  // Mirror every progress write to the account (debounced, no-op when logged out).
+  schedulePush();
 }
 
 export function getShelf(): ShelfItem[] {

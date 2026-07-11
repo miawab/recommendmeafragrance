@@ -14,11 +14,13 @@ function Cell({
 }) {
   const bg = tone === "hit" ? "bg-hit" : tone === "partial" ? "bg-partial" : "bg-miss";
   return (
-    <div className="flex flex-col items-center gap-1.5">
-      <p className="text-[10px] font-extrabold uppercase tracking-wider text-ink-400">{label}</p>
+    <div className="flex flex-col items-center gap-1 sm:gap-1.5">
+      <p className="text-center text-[9px] font-extrabold uppercase tracking-normal text-ink-400 sm:text-[10px] sm:tracking-wider">
+        {label}
+      </p>
       <div
         style={{ animationDelay: `${delay}ms` }}
-        className={`${bg} animate-tile-flip flex h-16 w-full items-center justify-center rounded-xl text-2xl font-extrabold text-white shadow-card [transform-style:preserve-3d]`}
+        className={`${bg} animate-tile-flip flex h-12 w-full items-center justify-center rounded-lg text-lg shadow-card [transform-style:preserve-3d] sm:h-16 sm:rounded-xl sm:text-2xl font-extrabold text-white`}
       >
         {children}
       </div>
@@ -41,7 +43,7 @@ export default function ScentleRow({
       <p className="mb-2 text-base font-bold text-ink-950">
         {guess.name} <span className="font-medium text-ink-400">— {guess.brand}</span>
       </p>
-      <div className="grid grid-cols-6 gap-2.5">
+      <div className="grid grid-cols-6 gap-1.5 sm:gap-2.5">
         <Cell delay={0} label="Brand" tone={feedback.brand === "exact" ? "hit" : feedback.brand === "partial" ? "partial" : "miss"}>
           {feedback.brand === "exact" ? "✓" : feedback.brand === "partial" ? "~" : "✗"}
         </Cell>

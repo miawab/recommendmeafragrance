@@ -16,7 +16,7 @@ export default function InfoTooltip({ children, label = "More info", align = "st
         <button
           type="button"
           aria-label={label}
-          className="tap-target inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-ink-400 hover:text-ink-950 transition-colors"
+          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-ink-400 hover:text-ink-950 transition-colors"
         >
           <HelpCircle className="h-6 w-6" strokeWidth={2.5} />
         </button>

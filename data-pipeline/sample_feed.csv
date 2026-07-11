@@ -1,0 +1,325 @@
+brand,name,price,currency,merchant,deepLink,volumeMl,inStock
+"Mugler","Alien EDT 100ml for men",20.00,USD,Merchant0,https://example.com/mugler-alien,100,true
+"Mugler","Angel Eau de Parfum 3.4 oz spray",32.50,USD,Merchant1,https://example.com/mugler-angel,100,true
+"Dolce Gabbana","Light Blue EDP 50ml",45.00,USD,Merchant2,https://example.com/dolce-gabbana-light-blue,100,true
+"Chanel","Coco Mademoiselle",57.50,USD,Merchant0,https://example.com/chanel-coco-mademoiselle,100,true
+"Lancome","La Vie Est Belle EDT 100ml for men",70.00,USD,Merchant1,https://example.com/lancome-la-vie-est-belle,100,true
+"Tom Ford","Black Orchid Eau de Parfum 3.4 oz spray",82.50,USD,Merchant2,https://example.com/tom-ford-black-orchid,100,true
+"Yves Saint Laurent","Black Opium EDP 50ml",95.00,USD,Merchant0,https://example.com/yves-saint-laurent-black-opium,100,true
+"Dior","Hypnotic Poison",107.50,USD,Merchant1,https://example.com/dior-hypnotic-poison,100,true
+"Dior","J Adore EDT 100ml for men",120.00,USD,Merchant2,https://example.com/dior-j-adore,100,true
+"Dior","Sauvage Eau de Parfum 3.4 oz spray",132.50,USD,Merchant0,https://example.com/dior-sauvage,100,true
+"Tom Ford","Tobacco Vanille EDP 50ml",145.00,USD,Merchant1,https://example.com/tom-ford-tobacco-vanille,100,true
+"Hermes","Terre D Hermes",157.50,USD,Merchant2,https://example.com/hermes-terre-d-hermes,100,true
+"Versace","Crystal Noir EDT 100ml for men",170.00,USD,Merchant0,https://example.com/versace-crystal-noir,100,true
+"Versace","Eros Eau de Parfum 3.4 oz spray",182.50,USD,Merchant1,https://example.com/versace-eros,100,true
+"Calvin Klein","Euphoria EDP 50ml",195.00,USD,Merchant2,https://example.com/calvin-klein-euphoria,100,true
+"Maison Francis Kurkdjian","Baccarat Rouge 540",20.00,USD,Merchant0,https://example.com/maison-francis-kurkdjian-baccarat-rouge-540,100,true
+"Versace","Bright Crystal EDT 100ml for men",32.50,USD,Merchant1,https://example.com/versace-bright-crystal,100,true
+"Chloe","Chloe Eau de Parfum Eau de Parfum 3.4 oz spray",45.00,USD,Merchant2,https://example.com/chloe-chloe-eau-de-parfum,100,true
+"Creed","Aventus EDP 50ml",57.50,USD,Merchant0,https://example.com/creed-aventus,100,true
+"Yves Saint Laurent","La Nuit de L Homme",70.00,USD,Merchant1,https://example.com/yves-saint-laurent-la-nuit-de-l-homme,100,true
+"Lalique","Encre Noire EDT 100ml for men",82.50,USD,Merchant2,https://example.com/lalique-encre-noire,100,true
+"Jean Paul Gaultier","Le Male Eau de Parfum 3.4 oz spray",95.00,USD,Merchant0,https://example.com/jean-paul-gaultier-le-male,100,true
+"Dior","Fahrenheit EDP 50ml",107.50,USD,Merchant1,https://example.com/dior-fahrenheit,100,true
+"Dior","Dior Homme Intense 2011",120.00,USD,Merchant2,https://example.com/dior-dior-homme-intense-2011,100,true
+"Viktor Rolf","Flowerbomb EDT 100ml for men",132.50,USD,Merchant0,https://example.com/viktor-rolf-flowerbomb,100,true
+"Narciso Rodriguez","Narciso Rodriguez for Her Eau de Parfum 3.4 oz spray",145.00,USD,Merchant1,https://example.com/narciso-rodriguez-narciso-rodriguez-for-her,100,true
+"Chanel","Bleu de Chanel EDP 50ml",157.50,USD,Merchant2,https://example.com/chanel-bleu-de-chanel,100,true
+"Carolina Herrera","Good Girl",170.00,USD,Merchant0,https://example.com/carolina-herrera-good-girl,100,true
+"Dolce Gabbana","D G Anthology L Imperatrice 3 EDT 100ml for men",182.50,USD,Merchant1,https://example.com/dolce-gabbana-d-g-anthology-l-imperatrice-3,100,true
+"Giorgio Armani","Si Eau de Parfum 3.4 oz spray",195.00,USD,Merchant2,https://example.com/giorgio-armani-si,100,true
+"Chanel","Chance Eau Tendre EDP 50ml",20.00,USD,Merchant0,https://example.com/chanel-chance-eau-tendre,100,true
+"Calvin Klein","Ck One",32.50,USD,Merchant1,https://example.com/calvin-klein-ck-one,100,true
+"Armaf","Club de Nuit Intense Man EDT 100ml for men",45.00,USD,Merchant2,https://example.com/armaf-club-de-nuit-intense-man,100,true
+"Guerlain","Shalimar Eau de Parfum Eau de Parfum 3.4 oz spray",57.50,USD,Merchant0,https://example.com/guerlain-shalimar-eau-de-parfum,100,true
+"Versace","Versace Pour Homme EDP 50ml",70.00,USD,Merchant1,https://example.com/versace-versace-pour-homme,100,true
+"Versace","Versace Pour Homme Dylan Blue",82.50,USD,Merchant2,https://example.com/versace-versace-pour-homme-dylan-blue,100,true
+"Dior","Pure Poison EDT 100ml for men",95.00,USD,Merchant0,https://example.com/dior-pure-poison,100,true
+"Dolce Gabbana","The One Eau de Parfum 3.4 oz spray",107.50,USD,Merchant1,https://example.com/dolce-gabbana-the-one,100,true
+"Lolita Lempicka","Lolita Lempicka EDP 50ml",120.00,USD,Merchant2,https://example.com/lolita-lempicka-lolita-lempicka,100,true
+"Maison Martin Margiela","By The Fireplace",132.50,USD,Merchant0,https://example.com/maison-martin-margiela-by-the-fireplace,100,true
+"Prada","Prada Candy EDT 100ml for men",145.00,USD,Merchant1,https://example.com/prada-prada-candy,100,true
+"Yves Saint Laurent","Y Eau de Parfum Eau de Parfum 3.4 oz spray",157.50,USD,Merchant2,https://example.com/yves-saint-laurent-y-eau-de-parfum,100,true
+"Donna Karan","Dkny Be Delicious EDP 50ml",170.00,USD,Merchant0,https://example.com/donna-karan-dkny-be-delicious,100,true
+"Dior","Poison",182.50,USD,Merchant1,https://example.com/dior-poison,100,true
+"Giorgio Armani","Acqua Di Gioia EDT 100ml for men",195.00,USD,Merchant2,https://example.com/giorgio-armani-acqua-di-gioia,100,true
+"Dior","Dior Addict Eau de Parfum 3.4 oz spray",20.00,USD,Merchant0,https://example.com/dior-dior-addict,100,true
+"Yves Saint Laurent","Libre EDP 50ml",32.50,USD,Merchant1,https://example.com/yves-saint-laurent-libre,100,true
+"Issey Miyake","L Eau D Issey Pour Homme",45.00,USD,Merchant2,https://example.com/issey-miyake-l-eau-d-issey-pour-homme,100,true
+"Lancome","Hypnose EDT 100ml for men",57.50,USD,Merchant0,https://example.com/lancome-hypnose,100,true
+"Giorgio Armani","Acqua Di Gio Profumo Eau de Parfum 3.4 oz spray",70.00,USD,Merchant1,https://example.com/giorgio-armani-acqua-di-gio-profumo,100,true
+"Chanel","Chance Eau Fraiche EDP 50ml",82.50,USD,Merchant2,https://example.com/chanel-chance-eau-fraiche,100,true
+"Nina Ricci","Nina",95.00,USD,Merchant0,https://example.com/nina-ricci-nina,100,true
+"Kenzo","Flower By Kenzo EDT 100ml for men",107.50,USD,Merchant1,https://example.com/kenzo-flower-by-kenzo,100,true
+"Britney Spears","Fantasy Eau de Parfum 3.4 oz spray",120.00,USD,Merchant2,https://example.com/britney-spears-fantasy,100,true
+"Giorgio Armani","Armani Code for Women EDP 50ml",132.50,USD,Merchant0,https://example.com/giorgio-armani-armani-code-for-women,100,true
+"Guerlain","Mon Guerlain",145.00,USD,Merchant1,https://example.com/guerlain-mon-guerlain,100,true
+"Chanel","Bleu de Chanel Eau de Parfum EDT 100ml for men",157.50,USD,Merchant2,https://example.com/chanel-bleu-de-chanel-eau-de-parfum,100,true
+"Jean Paul Gaultier","Le Male le Parfum Eau de Parfum 3.4 oz spray",170.00,USD,Merchant0,https://example.com/jean-paul-gaultier-le-male-le-parfum,100,true
+"Aquolina","Pink Sugar EDP 50ml",182.50,USD,Merchant1,https://example.com/aquolina-pink-sugar,100,true
+"Lancome","Miracle",195.00,USD,Merchant2,https://example.com/lancome-miracle,100,true
+"Chanel","Chanel No 5 Parfum EDT 100ml for men",20.00,USD,Merchant0,https://example.com/chanel-chanel-no-5-parfum,100,true
+"Versace","Versace Man Eau Fraiche Eau de Parfum 3.4 oz spray",32.50,USD,Merchant1,https://example.com/versace-versace-man-eau-fraiche,100,true
+"Cacharel","Amor Amor EDP 50ml",45.00,USD,Merchant2,https://example.com/cacharel-amor-amor,100,true
+"Paco Rabanne","Lady Million",57.50,USD,Merchant0,https://example.com/paco-rabanne-lady-million,100,true
+"Elizabeth Arden","Green Tea EDT 100ml for men",70.00,USD,Merchant1,https://example.com/elizabeth-arden-green-tea,100,true
+"Ariana Grande","Cloud Eau de Parfum 3.4 oz spray",82.50,USD,Merchant2,https://example.com/ariana-grande-cloud,100,true
+"Hermes","Un Jardin Sur le Nil EDP 50ml",95.00,USD,Merchant0,https://example.com/hermes-un-jardin-sur-le-nil,100,true
+"Jean Paul Gaultier","Ultra Male",107.50,USD,Merchant1,https://example.com/jean-paul-gaultier-ultra-male,100,true
+"Kenzo","Kenzo Jungle L Elephant EDT 100ml for men",120.00,USD,Merchant2,https://example.com/kenzo-kenzo-jungle-l-elephant,100,true
+"Dolce Gabbana","The One for Men Eau de Parfum 3.4 oz spray",132.50,USD,Merchant0,https://example.com/dolce-gabbana-the-one-for-men,100,true
+"Chanel","Allure Homme Sport EDP 50ml",145.00,USD,Merchant1,https://example.com/chanel-allure-homme-sport,100,true
+"Chanel","Coco Eau de Parfum",157.50,USD,Merchant2,https://example.com/chanel-coco-eau-de-parfum,100,true
+"Nautica","Nautica Voyage EDT 100ml for men",170.00,USD,Merchant0,https://example.com/nautica-nautica-voyage,100,true
+"Paco Rabanne","Olympea Eau de Parfum 3.4 oz spray",182.50,USD,Merchant1,https://example.com/paco-rabanne-olympea,100,true
+"Dior","Dune EDP 50ml",195.00,USD,Merchant2,https://example.com/dior-dune,100,true
+"By Kilian","Angels Share",20.00,USD,Merchant0,https://example.com/by-kilian-angels-share,100,true
+"Lancome","Tresor EDT 100ml for men",32.50,USD,Merchant1,https://example.com/lancome-tresor,100,true
+"Givenchy","Ange Ou Demon Eau de Parfum 3.4 oz spray",45.00,USD,Merchant2,https://example.com/givenchy-ange-ou-demon,100,true
+"Byredo","Bal D Afrique EDP 50ml",57.50,USD,Merchant0,https://example.com/byredo-bal-d-afrique,100,true
+"Moschino","Cheap Chic I Love Love",70.00,USD,Merchant1,https://example.com/moschino-cheap-chic-i-love-love,100,true
+"Chanel","Chance Eau de Toilette EDT 100ml for men",82.50,USD,Merchant2,https://example.com/chanel-chance-eau-de-toilette,100,true
+"Cacharel","Noa Eau de Parfum 3.4 oz spray",95.00,USD,Merchant0,https://example.com/cacharel-noa,100,true
+"Lancome","Poeme EDP 50ml",107.50,USD,Merchant1,https://example.com/lancome-poeme,100,true
+"Marc Jacobs","Daisy",120.00,USD,Merchant2,https://example.com/marc-jacobs-daisy,100,true
+"Narciso Rodriguez","Narciso Rodriguez for Her Eau de Parfum EDT 100ml for men",132.50,USD,Merchant0,https://example.com/narciso-rodriguez-narciso-rodriguez-for-her-eau-de-parfum,100,true
+"Maison Martin Margiela","Jazz Club Eau de Parfum 3.4 oz spray",145.00,USD,Merchant1,https://example.com/maison-martin-margiela-jazz-club,100,true
+"Viktor Rolf","Spicebomb EDP 50ml",157.50,USD,Merchant2,https://example.com/viktor-rolf-spicebomb,100,true
+"Parfums de Marly","Layton",170.00,USD,Merchant0,https://example.com/parfums-de-marly-layton,100,true
+"Jean Paul Gaultier","Classique EDT 100ml for men",182.50,USD,Merchant1,https://example.com/jean-paul-gaultier-classique,100,true
+"Tom Ford","Lost Cherry Eau de Parfum 3.4 oz spray",195.00,USD,Merchant2,https://example.com/tom-ford-lost-cherry,100,true
+"Dolce Gabbana","The One for Men Eau de Parfum EDP 50ml",20.00,USD,Merchant0,https://example.com/dolce-gabbana-the-one-for-men-eau-de-parfum,100,true
+"Juicy Couture","Viva la Juicy",32.50,USD,Merchant1,https://example.com/juicy-couture-viva-la-juicy,100,true
+"Tom Ford","Ombre Leather 2018 EDT 100ml for men",45.00,USD,Merchant2,https://example.com/tom-ford-ombre-leather-2018,100,true
+"Dior","Sauvage Elixir Eau de Parfum 3.4 oz spray",57.50,USD,Merchant0,https://example.com/dior-sauvage-elixir,100,true
+"Lancome","La Nuit Tresor EDP 50ml",70.00,USD,Merchant1,https://example.com/lancome-la-nuit-tresor,100,true
+"Prada","Prada L Homme",82.50,USD,Merchant2,https://example.com/prada-prada-l-homme,100,true
+"Montblanc","Explorer EDT 100ml for men",95.00,USD,Merchant0,https://example.com/montblanc-explorer,100,true
+"Givenchy","L Interdit Eau de Parfum Eau de Parfum 3.4 oz spray",107.50,USD,Merchant1,https://example.com/givenchy-l-interdit-eau-de-parfum,100,true
+"Givenchy","Organza EDP 50ml",120.00,USD,Merchant2,https://example.com/givenchy-organza,100,true
+"Chanel","Coco Noir",132.50,USD,Merchant0,https://example.com/chanel-coco-noir,100,true
+"Hugo Boss","Boss Bottled EDT 100ml for men",145.00,USD,Merchant1,https://example.com/hugo-boss-boss-bottled,100,true
+"Paco Rabanne","Invictus Eau de Parfum 3.4 oz spray",157.50,USD,Merchant2,https://example.com/paco-rabanne-invictus,100,true
+"Britney Spears","Midnight Fantasy EDP 50ml",170.00,USD,Merchant0,https://example.com/britney-spears-midnight-fantasy,100,true
+"Burberry","London for Men",182.50,USD,Merchant1,https://example.com/burberry-london-for-men,100,true
+"Jean Paul Gaultier","Le Male Elixir EDT 100ml for men",195.00,USD,Merchant2,https://example.com/jean-paul-gaultier-le-male-elixir,100,true
+"Giorgio Armani","Armani Code Eau de Parfum 3.4 oz spray",20.00,USD,Merchant0,https://example.com/giorgio-armani-armani-code,100,true
+"Yves Saint Laurent","Cinema EDP 50ml",32.50,USD,Merchant1,https://example.com/yves-saint-laurent-cinema,100,true
+"Versace","Versense",45.00,USD,Merchant2,https://example.com/versace-versense,100,true
+"Burberry","Burberry Her EDT 100ml for men",57.50,USD,Merchant0,https://example.com/burberry-burberry-her,100,true
+"Dior","Dolce Vita Eau de Parfum 3.4 oz spray",70.00,USD,Merchant1,https://example.com/dior-dolce-vita,100,true
+"Prada","Infusion D Iris EDP 50ml",82.50,USD,Merchant2,https://example.com/prada-infusion-d-iris,100,true
+"Chanel","Egoiste Platinum",95.00,USD,Merchant0,https://example.com/chanel-egoiste-platinum,100,true
+"Joop","Joop Homme EDT 100ml for men",107.50,USD,Merchant1,https://example.com/joop-joop-homme,100,true
+"Kenzo","Kenzo Amour Eau de Parfum 3.4 oz spray",120.00,USD,Merchant2,https://example.com/kenzo-kenzo-amour,100,true
+"Lancome","Tresor Midnight Rose EDP 50ml",132.50,USD,Merchant0,https://example.com/lancome-tresor-midnight-rose,100,true
+"Mugler","A Men",145.00,USD,Merchant1,https://example.com/mugler-a-men,100,true
+"Yves Saint Laurent","L Homme EDT 100ml for men",157.50,USD,Merchant2,https://example.com/yves-saint-laurent-l-homme,100,true
+"Xerjoff","Xj 1861 Naxos Eau de Parfum 3.4 oz spray",170.00,USD,Merchant0,https://example.com/xerjoff-xj-1861-naxos,100,true
+"Mancera","Cedrat Boise EDP 50ml",182.50,USD,Merchant1,https://example.com/mancera-cedrat-boise,100,true
+"Chanel","Allure Homme Sport Eau Extreme",195.00,USD,Merchant2,https://example.com/chanel-allure-homme-sport-eau-extreme,100,true
+"Cacharel","Loulou EDT 100ml for men",20.00,USD,Merchant0,https://example.com/cacharel-loulou,100,true
+"Issey Miyake","L Eau D Issey Eau de Parfum 3.4 oz spray",32.50,USD,Merchant1,https://example.com/issey-miyake-l-eau-d-issey,100,true
+"Versace","Eros Flame EDP 50ml",45.00,USD,Merchant2,https://example.com/versace-eros-flame,100,true
+"Giorgio Armani","Emporio Armani Stronger With You Intensely",57.50,USD,Merchant0,https://example.com/giorgio-armani-emporio-armani-stronger-with-you-intensely,100,true
+"Mugler","Aura Mugler EDT 100ml for men",70.00,USD,Merchant1,https://example.com/mugler-aura-mugler,100,true
+"Gucci","Gucci Rush Eau de Parfum 3.4 oz spray",82.50,USD,Merchant2,https://example.com/gucci-gucci-rush,100,true
+"Lancome","Idole EDP 50ml",95.00,USD,Merchant0,https://example.com/lancome-idole,100,true
+"Lacoste Fragrances","Lacoste Pour Femme",107.50,USD,Merchant1,https://example.com/lacoste-fragrances-lacoste-pour-femme,100,true
+"Dior","Midnight Poison EDT 100ml for men",120.00,USD,Merchant2,https://example.com/dior-midnight-poison,100,true
+"Gucci","Gucci Guilty Eau de Parfum 3.4 oz spray",132.50,USD,Merchant0,https://example.com/gucci-gucci-guilty,100,true
+"Bvlgari","Omnia Crystalline EDP 50ml",145.00,USD,Merchant1,https://example.com/bvlgari-omnia-crystalline,100,true
+"Dior","Miss Dior Blooming Bouquet",157.50,USD,Merchant2,https://example.com/dior-miss-dior-blooming-bouquet,100,true
+"Lattafa","Khamrah EDT 100ml for men",170.00,USD,Merchant0,https://example.com/lattafa-perfumes-khamrah,100,true
+"Dior","Sauvage Eau de Parfum Eau de Parfum 3.4 oz spray",182.50,USD,Merchant1,https://example.com/dior-sauvage-eau-de-parfum,100,true
+"Giorgio Armani","My Way EDP 50ml",195.00,USD,Merchant2,https://example.com/giorgio-armani-my-way,100,true
+"Creed","Green Irish Tweed",20.00,USD,Merchant0,https://example.com/creed-green-irish-tweed,100,true
+"Elizabeth Arden","5th Avenue EDT 100ml for men",32.50,USD,Merchant1,https://example.com/elizabeth-arden-5th-avenue,100,true
+"Tom Ford","Noir Extreme Eau de Parfum 3.4 oz spray",45.00,USD,Merchant2,https://example.com/tom-ford-noir-extreme,100,true
+"Calvin Klein","Obsession EDP 50ml",57.50,USD,Merchant0,https://example.com/calvin-klein-obsession,100,true
+"Guerlain","Shalimar Parfum Initial",70.00,USD,Merchant1,https://example.com/guerlain-shalimar-parfum-initial,100,true
+"Paco Rabanne","Black Xs for Her EDT 100ml for men",82.50,USD,Merchant2,https://example.com/paco-rabanne-black-xs-for-her,100,true
+"Nasomatto","Black Afgano Eau de Parfum 3.4 oz spray",95.00,USD,Merchant0,https://example.com/nasomatto-black-afgano,100,true
+"Moschino","Toy Boy EDP 50ml",107.50,USD,Merchant1,https://example.com/moschino-toy-boy,100,true
+"Parfums de Marly","Delina",120.00,USD,Merchant2,https://example.com/parfums-de-marly-delina,100,true
+"Estee Lauder","Pleasures EDT 100ml for men",132.50,USD,Merchant0,https://example.com/estee-lauder-pleasures,100,true
+"Mancera","Red Tobacco Eau de Parfum 3.4 oz spray",145.00,USD,Merchant1,https://example.com/mancera-red-tobacco,100,true
+"Davidoff","Cool Water EDP 50ml",157.50,USD,Merchant2,https://example.com/davidoff-cool-water,100,true
+"Elie Saab","Le Parfum",170.00,USD,Merchant0,https://example.com/elie-saab-le-parfum,100,true
+"Chanel","Chanel No 5 Eau de Parfum EDT 100ml for men",182.50,USD,Merchant1,https://example.com/chanel-chanel-no-5-eau-de-parfum,100,true
+"Cacharel","Anais Anais Eau de Parfum 3.4 oz spray",195.00,USD,Merchant2,https://example.com/cacharel-anais-anais,100,true
+"Jimmy Choo","Jimmy Choo EDP 50ml",20.00,USD,Merchant0,https://example.com/jimmy-choo-jimmy-choo,100,true
+"By Kilian","Love Don T Be Shy",32.50,USD,Merchant1,https://example.com/by-kilian-love-don-t-be-shy,100,true
+"Dior","Poison Girl EDT 100ml for men",45.00,USD,Merchant2,https://example.com/dior-poison-girl,100,true
+"Tom Ford","Tuscan Leather Eau de Parfum 3.4 oz spray",57.50,USD,Merchant0,https://example.com/tom-ford-tuscan-leather,100,true
+"Montale","Intense Cafe EDP 50ml",70.00,USD,Merchant1,https://example.com/montale-intense-cafe,100,true
+"Diptyque","Philosykos Eau de Parfum",82.50,USD,Merchant2,https://example.com/diptyque-philosykos-eau-de-parfum,100,true
+"Bentley","Bentley for Men Intense EDT 100ml for men",95.00,USD,Merchant0,https://example.com/bentley-bentley-for-men-intense,100,true
+"Burberry","Burberry Brit Eau de Parfum 3.4 oz spray",107.50,USD,Merchant1,https://example.com/burberry-burberry-brit,100,true
+"Givenchy","Amarige EDP 50ml",120.00,USD,Merchant2,https://example.com/givenchy-amarige,100,true
+"Yves Saint Laurent","Opium 1977",132.50,USD,Merchant0,https://example.com/yves-saint-laurent-opium-1977,100,true
+"Kenzo","L Eau Par Kenzo EDT 100ml for men",145.00,USD,Merchant1,https://example.com/kenzo-l-eau-par-kenzo,100,true
+"Frederic Malle","Portrait of a Lady Eau de Parfum 3.4 oz spray",157.50,USD,Merchant2,https://example.com/frederic-malle-portrait-of-a-lady,100,true
+"Bvlgari","Bvlgari Man in Black EDP 50ml",170.00,USD,Merchant0,https://example.com/bvlgari-bvlgari-man-in-black,100,true
+"Calvin Klein","Eternity",182.50,USD,Merchant1,https://example.com/calvin-klein-eternity,100,true
+"Parfums de Marly","Herod EDT 100ml for men",195.00,USD,Merchant2,https://example.com/parfums-de-marly-herod,100,true
+"Cerruti","1881 Eau de Parfum 3.4 oz spray",20.00,USD,Merchant0,https://example.com/cerruti-1881,100,true
+"Chloe","Nomade EDP 50ml",32.50,USD,Merchant1,https://example.com/chloe-nomade,100,true
+"Narciso Rodriguez","Narciso Poudree",45.00,USD,Merchant2,https://example.com/narciso-rodriguez-narciso-poudree,100,true
+"Yves Saint Laurent","Mon Paris EDT 100ml for men",57.50,USD,Merchant0,https://example.com/yves-saint-laurent-mon-paris,100,true
+"Guerlain","L Instant de Guerlain Eau de Parfum 3.4 oz spray",70.00,USD,Merchant1,https://example.com/guerlain-l-instant-de-guerlain,100,true
+"Mugler","Angel Muse EDP 50ml",82.50,USD,Merchant2,https://example.com/mugler-angel-muse,100,true
+"Sarah Jessica Parker","Lovely",95.00,USD,Merchant0,https://example.com/sarah-jessica-parker-lovely,100,true
+"Gucci","Gucci Bloom EDT 100ml for men",107.50,USD,Merchant1,https://example.com/gucci-gucci-bloom,100,true
+"Dolce Gabbana","Light Blue Eau Intense Pour Homme Eau de Parfum 3.4 oz spray",120.00,USD,Merchant2,https://example.com/dolce-gabbana-light-blue-eau-intense-pour-homme,100,true
+"Giorgio Armani","Acqua Di Gio Profondo EDP 50ml",132.50,USD,Merchant0,https://example.com/giorgio-armani-acqua-di-gio-profondo,100,true
+"Zadig Voltaire","This Is Her",145.00,USD,Merchant1,https://example.com/zadig-voltaire-this-is-her,100,true
+"Guerlain","Insolence EDT 100ml for men",157.50,USD,Merchant2,https://example.com/guerlain-insolence,100,true
+"Burberry","Body Eau de Parfum 3.4 oz spray",170.00,USD,Merchant0,https://example.com/burberry-body,100,true
+"Versace","Blue Jeans EDP 50ml",182.50,USD,Merchant1,https://example.com/versace-blue-jeans,100,true
+"Burberry","London",195.00,USD,Merchant2,https://example.com/burberry-london,100,true
+"Givenchy","Ange Ou Demon le Secret EDT 100ml for men",20.00,USD,Merchant0,https://example.com/givenchy-ange-ou-demon-le-secret,100,true
+"Burberry","Weekend for Women Eau de Parfum 3.4 oz spray",32.50,USD,Merchant1,https://example.com/burberry-weekend-for-women,100,true
+"Cacharel","Eden EDP 50ml",45.00,USD,Merchant2,https://example.com/cacharel-eden,100,true
+"Maison Francis Kurkdjian","Baccarat Rouge 540 Extrait de Parfum",57.50,USD,Merchant0,https://example.com/maison-francis-kurkdjian-baccarat-rouge-540-extrait-de-parfum,100,true
+"Tom Ford","Velvet Orchid EDT 100ml for men",70.00,USD,Merchant1,https://example.com/tom-ford-velvet-orchid,100,true
+"Givenchy","Pi Eau de Parfum 3.4 oz spray",82.50,USD,Merchant2,https://example.com/givenchy-pi,100,true
+"Dior","Dior Homme Parfum EDP 50ml",95.00,USD,Merchant0,https://example.com/dior-dior-homme-parfum,100,true
+"Jean Paul Gaultier","Le Beau le Parfum",107.50,USD,Merchant1,https://example.com/jean-paul-gaultier-le-beau-le-parfum,100,true
+"Creed","Silver Mountain Water EDT 100ml for men",120.00,USD,Merchant2,https://example.com/creed-silver-mountain-water,100,true
+"Tom Ford","Noir de Noir Eau de Parfum 3.4 oz spray",132.50,USD,Merchant0,https://example.com/tom-ford-noir-de-noir,100,true
+"Montblanc","Individuel EDP 50ml",145.00,USD,Merchant1,https://example.com/montblanc-individuel,100,true
+"Dior","Miss Dior Cherie",157.50,USD,Merchant2,https://example.com/dior-miss-dior-cherie,100,true
+"Hermes","Eau Des Merveilles EDT 100ml for men",170.00,USD,Merchant0,https://example.com/hermes-eau-des-merveilles,100,true
+"Bvlgari","Jasmin Noir Eau de Parfum 3.4 oz spray",182.50,USD,Merchant1,https://example.com/bvlgari-jasmin-noir,100,true
+"Yves Saint Laurent","Kouros EDP 50ml",195.00,USD,Merchant2,https://example.com/yves-saint-laurent-kouros,100,true
+"Frederic Malle","Musc Ravageur",20.00,USD,Merchant0,https://example.com/frederic-malle-musc-ravageur,100,true
+"Bvlgari","Aqva Pour Homme EDT 100ml for men",32.50,USD,Merchant1,https://example.com/bvlgari-aqva-pour-homme,100,true
+"Yves Saint Laurent","Manifesto Eau de Parfum 3.4 oz spray",45.00,USD,Merchant2,https://example.com/yves-saint-laurent-manifesto,100,true
+"Byredo","Gypsy Water EDP 50ml",57.50,USD,Merchant0,https://example.com/byredo-gypsy-water,100,true
+"Jean Paul Gaultier","Scandal",70.00,USD,Merchant1,https://example.com/jean-paul-gaultier-scandal,100,true
+"Lolita Lempicka","L de Lolita Lempicka EDT 100ml for men",82.50,USD,Merchant2,https://example.com/lolita-lempicka-l-de-lolita-lempicka,100,true
+"Carolina Herrera","212 Men Eau de Parfum 3.4 oz spray",95.00,USD,Merchant0,https://example.com/carolina-herrera-212-men,100,true
+"Clinique","Clinique Happy EDP 50ml",107.50,USD,Merchant1,https://example.com/clinique-clinique-happy,100,true
+"Calvin Klein","Ck In2u for Her",120.00,USD,Merchant2,https://example.com/calvin-klein-ck-in2u-for-her,100,true
+"Mugler","A Men Pure Havane EDT 100ml for men",132.50,USD,Merchant0,https://example.com/mugler-a-men-pure-havane,100,true
+"Chloe","Love Eau de Parfum 3.4 oz spray",145.00,USD,Merchant1,https://example.com/chloe-love,100,true
+"Yves Saint Laurent","Libre Intense EDP 50ml",157.50,USD,Merchant2,https://example.com/yves-saint-laurent-libre-intense,100,true
+"Xerjoff","Lira",170.00,USD,Merchant0,https://example.com/xerjoff-lira,100,true
+"Hugo Boss","Deep Red EDT 100ml for men",182.50,USD,Merchant1,https://example.com/hugo-boss-deep-red,100,true
+"Hermes","Un Jardin En Mediterranee Eau de Parfum 3.4 oz spray",195.00,USD,Merchant2,https://example.com/hermes-un-jardin-en-mediterranee,100,true
+"Guerlain","L Homme Ideal Eau de Parfum EDP 50ml",20.00,USD,Merchant0,https://example.com/guerlain-l-homme-ideal-eau-de-parfum,100,true
+"Giorgio Armani","Emporio Armani Stronger With You",32.50,USD,Merchant1,https://example.com/giorgio-armani-emporio-armani-stronger-with-you,100,true
+"Chanel","Gabrielle EDT 100ml for men",45.00,USD,Merchant2,https://example.com/chanel-gabrielle,100,true
+"Guerlain","Champs Elysees Eau de Toilette Eau de Parfum 3.4 oz spray",57.50,USD,Merchant0,https://example.com/guerlain-champs-elysees-eau-de-toilette,100,true
+"Amouage","Interlude Man EDP 50ml",70.00,USD,Merchant1,https://example.com/amouage-interlude-man,100,true
+"Guerlain","Aqua Allegoria Mandarine Basilic",82.50,USD,Merchant2,https://example.com/guerlain-aqua-allegoria-mandarine-basilic,100,true
+"Tom Ford","Grey Vetiver EDT 100ml for men",95.00,USD,Merchant0,https://example.com/tom-ford-grey-vetiver,100,true
+"Burberry","Burberry Women Eau de Parfum 3.4 oz spray",107.50,USD,Merchant1,https://example.com/burberry-burberry-women,100,true
+"Dior","Miss Dior 2012 EDP 50ml",120.00,USD,Merchant2,https://example.com/dior-miss-dior-2012,100,true
+"Creed","Virgin Island Water",132.50,USD,Merchant0,https://example.com/creed-virgin-island-water,100,true
+"Narciso Rodriguez","Narciso EDT 100ml for men",145.00,USD,Merchant1,https://example.com/narciso-rodriguez-narciso,100,true
+"Tauer Perfumes","02 L Air Du Desert Marocain Eau de Parfum 3.4 oz spray",157.50,USD,Merchant2,https://example.com/tauer-perfumes-02-l-air-du-desert-marocain,100,true
+"Amouage","Reflection Man EDP 50ml",170.00,USD,Merchant0,https://example.com/amouage-reflection-man,100,true
+"Afnan","9pm",182.50,USD,Merchant1,https://example.com/afnan-9pm,100,true
+"Chopard","Casmir EDT 100ml for men",195.00,USD,Merchant2,https://example.com/chopard-casmir,100,true
+"Moschino","Moschino Funny Eau de Parfum 3.4 oz spray",20.00,USD,Merchant0,https://example.com/moschino-moschino-funny,100,true
+"Tom Ford","Neroli Portofino EDP 50ml",32.50,USD,Merchant1,https://example.com/tom-ford-neroli-portofino,100,true
+"Dolce Gabbana","Dolce Gabbana Pour Femme",45.00,USD,Merchant2,https://example.com/dolce-gabbana-dolce-gabbana-pour-femme,100,true
+"Yves Saint Laurent","Opium Eau de Parfum 2009 EDT 100ml for men",57.50,USD,Merchant0,https://example.com/yves-saint-laurent-opium-eau-de-parfum-2009,100,true
+"Tommy Hilfiger","Tommy Girl Eau de Parfum 3.4 oz spray",70.00,USD,Merchant1,https://example.com/tommy-hilfiger-tommy-girl,100,true
+"Nishane","Hacivat EDP 50ml",82.50,USD,Merchant2,https://example.com/nishane-hacivat,100,true
+"Chanel","Allure Sensuelle",95.00,USD,Merchant0,https://example.com/chanel-allure-sensuelle,100,true
+"By Kilian","Black Phantom EDT 100ml for men",107.50,USD,Merchant1,https://example.com/by-kilian-black-phantom,100,true
+"Bottega Veneta","Bottega Veneta Eau de Parfum 3.4 oz spray",120.00,USD,Merchant2,https://example.com/bottega-veneta-bottega-veneta,100,true
+"Narciso Rodriguez","Pure Musc for Her EDP 50ml",132.50,USD,Merchant0,https://example.com/narciso-rodriguez-pure-musc-for-her,100,true
+"Guerlain","Idylle",145.00,USD,Merchant1,https://example.com/guerlain-idylle,100,true
+"Jean Paul Gaultier","Le Beau EDT 100ml for men",157.50,USD,Merchant2,https://example.com/jean-paul-gaultier-le-beau,100,true
+"Tom Ford","Fucking Fabulous Eau de Parfum 3.4 oz spray",170.00,USD,Merchant0,https://example.com/tom-ford-fucking-fabulous,100,true
+"Hermes","Terre D Hermes Parfum EDP 50ml",182.50,USD,Merchant1,https://example.com/hermes-terre-d-hermes-parfum,100,true
+"Mugler","A Men Pure Malt",195.00,USD,Merchant2,https://example.com/mugler-a-men-pure-malt,100,true
+"Marc Jacobs","Decadence EDT 100ml for men",20.00,USD,Merchant0,https://example.com/marc-jacobs-decadence,100,true
+"Chanel","Bleu de Chanel Parfum Eau de Parfum 3.4 oz spray",32.50,USD,Merchant1,https://example.com/chanel-bleu-de-chanel-parfum,100,true
+"Tiziana Terenzi","Kirke EDP 50ml",45.00,USD,Merchant2,https://example.com/tiziana-terenzi-kirke,100,true
+"Azzaro","Chrome",57.50,USD,Merchant0,https://example.com/azzaro-chrome,100,true
+"Chanel","Egoiste EDT 100ml for men",70.00,USD,Merchant1,https://example.com/chanel-egoiste,100,true
+"Jo Malone London","English Pear Freesia Eau de Parfum 3.4 oz spray",82.50,USD,Merchant2,https://example.com/jo-malone-london-english-pear-freesia,100,true
+"Marc Jacobs","Daisy Eau So Fresh EDP 50ml",95.00,USD,Merchant0,https://example.com/marc-jacobs-daisy-eau-so-fresh,100,true
+"Paloma Picasso","Paloma Picasso",107.50,USD,Merchant1,https://example.com/paloma-picasso-paloma-picasso,100,true
+"Calvin Klein","Ck One Shock for Him EDT 100ml for men",120.00,USD,Merchant2,https://example.com/calvin-klein-ck-one-shock-for-him,100,true
+"Lalique","Amethyst Eau de Parfum 3.4 oz spray",132.50,USD,Merchant0,https://example.com/lalique-amethyst,100,true
+"Dior","Dior Homme EDP 50ml",145.00,USD,Merchant1,https://example.com/dior-dior-homme,100,true
+"Xerjoff","Erba Pura",157.50,USD,Merchant2,https://example.com/xerjoff-erba-pura,100,true
+"Dolce Gabbana","Light Blue Pour Homme EDT 100ml for men",170.00,USD,Merchant0,https://example.com/dolce-gabbana-light-blue-pour-homme,100,true
+"Balenciaga","Florabotanica Eau de Parfum 3.4 oz spray",182.50,USD,Merchant1,https://example.com/balenciaga-florabotanica,100,true
+"Carolina Herrera","212 Sexy EDP 50ml",195.00,USD,Merchant2,https://example.com/carolina-herrera-212-sexy,100,true
+"Agent Provocateur","Agent Provocateur",20.00,USD,Merchant0,https://example.com/agent-provocateur-agent-provocateur,100,true
+"Jean Paul Gaultier","La Belle EDT 100ml for men",32.50,USD,Merchant1,https://example.com/jean-paul-gaultier-la-belle,100,true
+"Dior","Dior Homme 2020 Eau de Parfum 3.4 oz spray",45.00,USD,Merchant2,https://example.com/dior-dior-homme-2020,100,true
+"Gucci","Memoire D Une Odeur EDP 50ml",57.50,USD,Merchant0,https://example.com/gucci-memoire-d-une-odeur,100,true
+"Nina Ricci","L Air Du Temps",70.00,USD,Merchant1,https://example.com/nina-ricci-l-air-du-temps,100,true
+"Salvador Dali","Laguna EDT 100ml for men",82.50,USD,Merchant2,https://example.com/salvador-dali-laguna,100,true
+"Nishane","Ani Eau de Parfum 3.4 oz spray",95.00,USD,Merchant0,https://example.com/nishane-ani,100,true
+"Valentino","Valentino Donna Born in Roma EDP 50ml",107.50,USD,Merchant1,https://example.com/valentino-valentino-donna-born-in-roma,100,true
+"Montblanc","Legend",120.00,USD,Merchant2,https://example.com/montblanc-legend,100,true
+"Lalique","Perles de Lalique EDT 100ml for men",132.50,USD,Merchant0,https://example.com/lalique-perles-de-lalique,100,true
+"Yves Saint Laurent","Parisienne Eau de Parfum 3.4 oz spray",145.00,USD,Merchant1,https://example.com/yves-saint-laurent-parisienne,100,true
+"Acqua Di Parma","Acqua Di Parma Blu Mediterraneo Fico Di Amalfi EDP 50ml",157.50,USD,Merchant2,https://example.com/acqua-di-parma-acqua-di-parma-blu-mediterraneo-fico-di-amalfi,100,true
+"Givenchy","Very Irresistible",170.00,USD,Merchant0,https://example.com/givenchy-very-irresistible,100,true
+"Chanel","Allure Homme EDT 100ml for men",182.50,USD,Merchant1,https://example.com/chanel-allure-homme,100,true
+"Mugler","Alien Essence Absolue Eau de Parfum 3.4 oz spray",195.00,USD,Merchant2,https://example.com/mugler-alien-essence-absolue,100,true
+"Versace","Yellow Diamond EDP 50ml",20.00,USD,Merchant0,https://example.com/versace-yellow-diamond,100,true
+"Chanel","Chanel N05 Eau Premiere",32.50,USD,Merchant1,https://example.com/chanel-chanel-n05-eau-premiere,100,true
+"Cartier","La Panthere EDT 100ml for men",45.00,USD,Merchant2,https://example.com/cartier-la-panthere,100,true
+"Vera Wang","Princess Eau de Parfum 3.4 oz spray",57.50,USD,Merchant0,https://example.com/vera-wang-princess,100,true
+"Clinique","Aromatics Elixir EDP 50ml",70.00,USD,Merchant1,https://example.com/clinique-aromatics-elixir,100,true
+"Chanel","Chanel No 19 Eau de Parfum",82.50,USD,Merchant2,https://example.com/chanel-chanel-no-19-eau-de-parfum,100,true
+"Lalique","Lalique le Parfum EDT 100ml for men",95.00,USD,Merchant0,https://example.com/lalique-lalique-le-parfum,100,true
+"Azzaro","Wanted By Night Eau de Parfum 3.4 oz spray",107.50,USD,Merchant1,https://example.com/azzaro-wanted-by-night,100,true
+"Yves Saint Laurent","Elle EDP 50ml",120.00,USD,Merchant2,https://example.com/yves-saint-laurent-elle,100,true
+"Nina Ricci","Premier Jour",132.50,USD,Merchant0,https://example.com/nina-ricci-premier-jour,100,true
+"Byredo","Mojave Ghost EDT 100ml for men",145.00,USD,Merchant1,https://example.com/byredo-mojave-ghost,100,true
+"Prada","Luna Rossa Carbon Eau de Parfum 3.4 oz spray",157.50,USD,Merchant2,https://example.com/prada-luna-rossa-carbon,100,true
+"Guy Laroche","Drakkar Noir EDP 50ml",170.00,USD,Merchant0,https://example.com/guy-laroche-drakkar-noir,100,true
+"Tom Ford","Soleil Blanc",182.50,USD,Merchant1,https://example.com/tom-ford-soleil-blanc,100,true
+"Lalique","Encre Noire a L Extreme EDT 100ml for men",195.00,USD,Merchant2,https://example.com/lalique-encre-noire-a-l-extreme,100,true
+"Nina Ricci","Ricci Ricci Eau de Parfum 3.4 oz spray",20.00,USD,Merchant0,https://example.com/nina-ricci-ricci-ricci,100,true
+"Hermes","Twilly D Hermes EDP 50ml",32.50,USD,Merchant1,https://example.com/hermes-twilly-d-hermes,100,true
+"By Kilian","Good Girl Gone Bad",45.00,USD,Merchant2,https://example.com/by-kilian-good-girl-gone-bad,100,true
+"Chanel","Chanel No 5 L Eau EDT 100ml for men",57.50,USD,Merchant0,https://example.com/chanel-chanel-no-5-l-eau,100,true
+"Azzaro","Azzaro Pour Homme Eau de Parfum 3.4 oz spray",70.00,USD,Merchant1,https://example.com/azzaro-azzaro-pour-homme,100,true
+"Lancome","Tresor in Love EDP 50ml",82.50,USD,Merchant2,https://example.com/lancome-tresor-in-love,100,true
+"Bvlgari","Black",95.00,USD,Merchant0,https://example.com/bvlgari-black,100,true
+"Avon","Far Away EDT 100ml for men",107.50,USD,Merchant1,https://example.com/avon-far-away,100,true
+"Maison Martin Margiela","Beach Walk Eau de Parfum 3.4 oz spray",120.00,USD,Merchant2,https://example.com/maison-martin-margiela-beach-walk,100,true
+"Guerlain","L Instant Magic EDP 50ml",132.50,USD,Merchant0,https://example.com/guerlain-l-instant-magic,100,true
+"Mancera","Instant Crush",145.00,USD,Merchant1,https://example.com/mancera-instant-crush,100,true
+"Chanel","Allure EDT 100ml for men",157.50,USD,Merchant2,https://example.com/chanel-allure,100,true
+"Sol de Janeiro","Brazilian Crush Cheirosa 62 Eau de Parfum 3.4 oz spray",170.00,USD,Merchant0,https://example.com/sol-de-janeiro-brazilian-crush-cheirosa-62,100,true
+"Trussardi","Trussardi Donna 2011 EDP 50ml",182.50,USD,Merchant1,https://example.com/trussardi-trussardi-donna-2011,100,true
+"Chanel","Coco Mademoiselle Eau de Toilette",195.00,USD,Merchant2,https://example.com/chanel-coco-mademoiselle-eau-de-toilette,100,true
+"Lattafa","Asad EDT 100ml for men",20.00,USD,Merchant0,https://example.com/lattafa-perfumes-asad,100,true
+"Initio","Oud for Greatness Eau de Parfum 3.4 oz spray",32.50,USD,Merchant1,https://example.com/initio-parfums-prives-oud-for-greatness,100,true
+"Azzaro","The Most Wanted EDP 50ml",45.00,USD,Merchant2,https://example.com/azzaro-the-most-wanted,100,true
+"Parfums de Marly","Percival",57.50,USD,Merchant0,https://example.com/parfums-de-marly-percival,100,true
+"Carolina Herrera","Bad Boy EDT 100ml for men",70.00,USD,Merchant1,https://example.com/carolina-herrera-bad-boy,100,true
+"Lattafa","Yara Eau de Parfum 3.4 oz spray",82.50,USD,Merchant2,https://example.com/lattafa-perfumes-yara,100,true
+"Nishane","Wulong Cha EDP 50ml",95.00,USD,Merchant0,https://example.com/nishane-wulong-cha,100,true
+"Parfums de Marly","Althair",107.50,USD,Merchant1,https://example.com/parfums-de-marly-althair,100,true
+"Al Haramain","Amber Oud Gold Edition EDT 100ml for men",120.00,USD,Merchant2,https://example.com/al-haramain-perfumes-amber-oud-gold-edition,100,true
+"Afnan","Supremacy Silver Eau de Parfum 3.4 oz spray",132.50,USD,Merchant0,https://example.com/afnan-supremacy-silver,100,true
+"Armaf","Club de Nuit Untold EDP 50ml",145.00,USD,Merchant1,https://example.com/armaf-club-de-nuit-untold,100,true
+"Valentino","Valentino Donna Born in Roma Yellow Dream",157.50,USD,Merchant2,https://example.com/valentino-valentino-donna-born-in-roma-yellow-dream,100,true
+"Yves Saint Laurent","Y EDT 100ml for men",170.00,USD,Merchant0,https://example.com/yves-saint-laurent-y,100,true
+"Lattafa","Ajwad Eau de Parfum 3.4 oz spray",182.50,USD,Merchant1,https://example.com/lattafa-perfumes-ajwad,100,true
+"Lattafa","Raghba for Men EDP 50ml",195.00,USD,Merchant2,https://example.com/lattafa-perfumes-raghba-for-men,100,true
+"Al Haramain","Amber Oud",20.00,USD,Merchant0,https://example.com/al-haramain-perfumes-amber-oud,100,true
+"Prada","Prada L Homme Absolu EDT 100ml for men",32.50,USD,Merchant1,https://example.com/prada-prada-l-homme-absolu,100,true
+"Tom Ford","Oud Wood Parfum Eau de Parfum 3.4 oz spray",45.00,USD,Merchant2,https://example.com/tom-ford-oud-wood-parfum,100,true
+"Paco Rabanne","1 Million EDP 50ml",57.50,USD,Merchant0,https://example.com/paco-rabanne-1-million,100,true
+"So","So",70.00,USD,Merchant1,https://example.com/so-so,100,true
+"Roja Dove","Elysium Pour Femme EDT 100ml for men",82.50,USD,Merchant2,https://example.com/roja-dove-elysium-pour-femme,100,true
+"Giorgio Armani","Stronger With You Limited Edition Eau de Parfum 3.4 oz spray",95.00,USD,Merchant0,https://example.com/giorgio-armani-stronger-with-you-limited-edition,100,true
+"Rasasi","Hawas for Her EDP 50ml",107.50,USD,Merchant1,https://example.com/rasasi-hawas-for-her,100,true
+"Lattafa","Fakhar Lattafa",120.00,USD,Merchant2,https://example.com/lattafa-perfumes-fakhar-lattafa,100,true

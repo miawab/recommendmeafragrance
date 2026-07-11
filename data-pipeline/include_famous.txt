@@ -1,0 +1,55 @@
+# Hand-maintained hype list. One "Brand | Name" per line, matched fuzzily against the catalog.
+# Lines starting with # are ignored. Keep brand/name close to how Fragrantica writes them.
+Lattafa | Khamrah
+Lattafa | Asad
+Lattafa | Yara
+Lattafa | Ajwad
+Lattafa | Fakhar
+Lattafa | Raghba
+Armaf | Club de Nuit Intense Man
+Armaf | Club de Nuit Untold
+Afnan | 9pm
+Afnan | Supremacy Silver
+Al Haramain | Amber Oud Gold Edition
+Al Haramain | Amber Oud
+Rayhaan | Al Rayhaan
+Rasasi | Hawas
+Nishane | Hacivat
+Nishane | Ani
+Nishane | Wulong Cha
+Xerjoff | Naxos
+Xerjoff | Erba Pura
+Initio | Oud for Greatness
+Initio | Side Effect
+Parfums de Marly | Layton
+Parfums de Marly | Percival
+Parfums de Marly | Althair
+Parfums de Marly | Herod
+Creed | Aventus
+Creed | Green Irish Tweed
+Creed | Silver Mountain Water
+Maison Francis Kurkdjian | Baccarat Rouge 540
+Maison Francis Kurkdjian | Grand Soir
+Amouage | Reflection Man
+Amouage | Interlude Man
+Tom Ford | Oud Wood
+Tom Ford | Tobacco Vanille
+Roja | Elysium
+Dior | Sauvage
+Dior | Homme Intense
+Chanel | Bleu de Chanel
+Yves Saint Laurent | La Nuit de L'Homme
+Yves Saint Laurent | Y
+Versace | Eros
+Versace | Eros Flame
+Jean Paul Gaultier | Le Male
+Jean Paul Gaultier | Ultra Male
+Giorgio Armani | Acqua di Gio Profumo
+Giorgio Armani | Stronger with You
+Prada | L'Homme
+Paco Rabanne | 1 Million
+Paco Rabanne | Invictus
+Carolina Herrera | Bad Boy
+Montblanc | Explorer
+Valentino | Born in Roma
+Azzaro | The Most Wanted

@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Deliberately not re-declared here: next/font sets --font-display-google
+     and --font-sans-google via a class on <body>. Referencing them from a
+     :root custom property would resolve at :root's position in the tree
+     (where they're invisible, since body is a descendant), producing an
+     empty value that then inherits down everywhere. tailwind.config.ts's
+     fontFamily entries reference --font-display-google/--font-sans-google
+     directly instead, so substitution happens at each element correctly. */
+
+  /* User palette: #FFF8F0 cream, #C08552 caramel, #8C5A3C warm brown, #4B2E2B
+     dark chocolate ink. Mapped through tailwind.config.ts colors, not shadcn's
+     default neutral theme. Plain color values, not HSL triplets, so
+     tailwind.config references them as var(--x) directly (no hsl() wrap). */
+  --background: #fff8f0;
+  --foreground: #4b2e2b;
+  --card: #ffffff;
+  --card-foreground: #4b2e2b;
+  --popover: #ffffff;
+  --popover-foreground: #4b2e2b;
+  --primary: #c08552;
+  --primary-foreground: #ffffff;
+  --secondary: #4b2e2b;
+  --secondary-foreground: #fff8f0;
+  --muted: #fdf1e4;
+  --muted-foreground: #8c5a3c;
+  --accent: #f3ddc3;
+  --accent-foreground: #4b2e2b;
+  --destructive: #4b2e2b;
+  --destructive-foreground: #fff8f0;
+  --border: rgba(75, 46, 43, 0.16);
+  --input: rgba(75, 46, 43, 0.16);
+  --ring: #4b2e2b;
+  --radius: 1.25rem;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans-google), sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .tap-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .shimmer-bg {
+    background: linear-gradient(
+      90deg,
+      theme("colors.cream.300") 25%,
+      theme("colors.cream.200") 37%,
+      theme("colors.cream.300") 63%
+    );
+    background-size: 200% 100%;
+  }
+}
+
+@layer base {
+  :focus-visible {
+    outline: 2px solid theme("colors.ink.950");
+    outline-offset: 2px;
+  }
+  * {
+    @apply border-border;
+  }
+}

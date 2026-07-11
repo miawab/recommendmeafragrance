@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { Send, Sparkles } from "lucide-react";
 import InfoTooltip from "@/components/InfoTooltip";
 import ResultCard from "@/components/ResultCard";
 import { Button } from "@/components/ui/button";
@@ -233,20 +234,34 @@ export default function ChatPage() {
         </div>
       )}
 
-      <div className="flex flex-col gap-4 min-h-[8rem]">
+      <div className="flex flex-col gap-4 overflow-y-auto rounded-3xl border-2 border-ink-950/8 bg-cream-200/40 p-4 sm:p-5 min-h-[16rem] max-h-[55vh]">
+        {turns.length === 0 && !loading && (
+          <p className="m-auto max-w-[80%] text-center text-base font-medium text-ink-400">
+            Say hi, tell me what you like, or ask for a recommendation, I&apos;m here to help.
+          </p>
+        )}
         {turns.map((t, i) => (
-          <div key={i} className="flex flex-col gap-4">
+          <div key={i} className="flex flex-col gap-3">
             <div
-              className={`max-w-[85%] rounded-2xl px-5 py-3 text-base font-medium ${
-                t.role === "user"
-                  ? "self-end bg-amber-400 text-ink-950"
-                  : "self-start border-2 border-ink-950/8 bg-cream-100 text-ink-950 shadow-card"
-              }`}
+              className={`flex items-end gap-2 ${t.role === "user" ? "flex-row-reverse" : ""}`}
             >
-              {t.content}
+              {t.role === "assistant" && (
+                <span className="mb-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink-950 text-cream-100 shadow-card">
+                  <Sparkles className="h-4 w-4" strokeWidth={2.5} />
+                </span>
+              )}
+              <div
+                className={`max-w-[80%] sm:max-w-[75%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2.5 text-base font-medium ${
+                  t.role === "user"
+                    ? "rounded-br-md bg-amber-400 text-ink-950"
+                    : "rounded-bl-md border-2 border-ink-950/8 bg-cream-100 text-ink-950 shadow-card"
+                }`}
+              >
+                {t.content}
+              </div>
             </div>
             {t.recommendations && (
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 pl-10">
                 {t.recommendations.picks.map((p) => (
                   <ResultCard key={p.id} perfume={p} surface="chat" offer={offers[p.id]} />
                 ))}
@@ -254,7 +269,20 @@ export default function ChatPage() {
             )}
           </div>
         ))}
-        {loading && <p className="text-base font-medium text-ink-400">Thinking...</p>}
+        {loading && (
+          <div className="flex items-end gap-2">
+            <span className="mb-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink-950 text-cream-100 shadow-card">
+              <Sparkles className="h-4 w-4" strokeWidth={2.5} />
+            </span>
+            <div className="rounded-2xl rounded-bl-md border-2 border-ink-950/8 bg-cream-100 px-4 py-3 shadow-card">
+              <span className="flex gap-1">
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-ink-400" style={{ animationDelay: "0ms" }} />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-ink-400" style={{ animationDelay: "120ms" }} />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-ink-400" style={{ animationDelay: "240ms" }} />
+              </span>
+            </div>
+          </div>
+        )}
         <div ref={bottomRef} />
       </div>
 
@@ -273,17 +301,24 @@ export default function ChatPage() {
         </div>
       ) : (
         <>
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value.slice(0, MAX_CHARS))}
               onKeyDown={(e) => e.key === "Enter" && send()}
-              placeholder="What are you in the mood for?"
+              placeholder="what mood are you in?"
               disabled={loading || username === undefined}
-              className="tap-target flex-1"
+              className="tap-target min-w-0 flex-1 px-4 text-base sm:px-5 sm:text-lg"
             />
-            <Button onClick={send} disabled={loading || !input.trim() || username === undefined} size="lg">
-              Send
+            <Button
+              onClick={send}
+              disabled={loading || !input.trim() || username === undefined}
+              size="lg"
+              className="shrink-0 px-4 sm:px-9"
+              aria-label="Send message"
+            >
+              <Send className="h-5 w-5 sm:hidden" strokeWidth={2.5} />
+              <span className="hidden sm:inline">Send</span>
             </Button>
           </div>
 

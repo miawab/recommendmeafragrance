@@ -31,14 +31,18 @@ const DAILY_GAMES = [
 ];
 
 // Icon badges cycle through the palette's three non-cream tones only
-// (caramel, warm brown, dark chocolate), no outside hues.
+// (caramel, warm brown, dark chocolate), no outside hues. Desktop's 3-col
+// grid already reads darkest-to-lightest across each row in source order;
+// mobile's 2-col grid needs a different visual order (same tone per row,
+// darkest on top) so the icon tones don't clash, hence the explicit
+// order classes below rather than reordering the array itself.
 const GAME_GRID = [
-  { href: "/scentle", label: "Scentle", blurb: "Today's daily puzzle.", icon: SprayCan, tone: "bg-ink-950 text-cream-100" },
-  { href: "/detective", label: "Note Detective", blurb: "Sniff it out from the notes.", icon: Search, tone: "bg-ink-400 text-cream-100" },
-  { href: "/build", label: "Build-a-Bottle", blurb: "Pick notes, invent a scent.", icon: FlaskConical, tone: "bg-amber-400 text-white" },
-  { href: "/higher-lower", label: "Higher or Lower", blurb: "Keep the streak alive.", icon: TrendingUp, tone: "bg-ink-950 text-cream-100" },
-  { href: "/roulette", label: "Scent Roulette", blurb: "Set the dials, pull the lever.", icon: Dices, tone: "bg-ink-400 text-cream-100" },
-  { href: "/blind-date", label: "Blind Date", blurb: "Swipe to buy or skip. Trust your nose.", icon: Heart, tone: "bg-amber-400 text-white" },
+  { href: "/scentle", label: "Scentle", blurb: "Today's daily puzzle.", icon: SprayCan, tone: "bg-ink-950 text-cream-100", order: "order-1 sm:order-1" },
+  { href: "/detective", label: "Note Detective", blurb: "Sniff it out from the notes.", icon: Search, tone: "bg-ink-400 text-cream-100", order: "order-3 sm:order-2" },
+  { href: "/build", label: "Build-a-Bottle", blurb: "Pick notes, invent a scent.", icon: FlaskConical, tone: "bg-amber-400 text-white", order: "order-5 sm:order-3" },
+  { href: "/higher-lower", label: "Higher or Lower", blurb: "Keep the streak alive.", icon: TrendingUp, tone: "bg-ink-950 text-cream-100", order: "order-2 sm:order-4" },
+  { href: "/roulette", label: "Scent Roulette", blurb: "Set the dials, pull the lever.", icon: Dices, tone: "bg-ink-400 text-cream-100", order: "order-4 sm:order-5" },
+  { href: "/blind-date", label: "Blind Date", blurb: "Swipe to buy or skip. Trust your nose.", icon: Heart, tone: "bg-amber-400 text-white", order: "order-6 sm:order-6" },
 ];
 
 export default function Home() {
@@ -136,7 +140,7 @@ export default function Home() {
             <Link
               key={g.href}
               href={g.href}
-              className="group tap-target rounded-3xl border-2 border-ink-950/8 bg-cream-100 p-5 shadow-card hover:shadow-card-lg hover:-translate-y-1 active:scale-[0.98] transition-all"
+              className={`group tap-target rounded-3xl border-2 border-ink-950/8 bg-cream-100 p-5 shadow-card hover:shadow-card-lg hover:-translate-y-1 active:scale-[0.98] transition-all ${g.order}`}
             >
               <GameIcon icon={g.icon} tone={g.tone} className="mb-3" />
               <p className="text-lg font-extrabold text-ink-950">{g.label}</p>

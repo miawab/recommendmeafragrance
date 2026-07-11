@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { buildGoogleAuthUrl, googleConfigured, OAUTH_STATE_COOKIE } from "@/lib/googleAuth";
+import { checkRateLimit, clientIp } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
@@ -9,6 +10,10 @@ export const runtime = "nodejs";
 export async function GET(req: NextRequest) {
   if (!googleConfigured()) {
     return NextResponse.redirect(new URL("/login?error=google_unconfigured", req.nextUrl.origin));
+  }
+  const withinRateLimit = await checkRateLimit(`gauth-start:${clientIp(req)}`, 30);
+  if (!withinRateLimit) {
+    return NextResponse.redirect(new URL("/login?error=rate_limited", req.nextUrl.origin));
   }
   const state = crypto.randomBytes(24).toString("hex");
   const res = NextResponse.redirect(buildGoogleAuthUrl(req.nextUrl.origin, state));

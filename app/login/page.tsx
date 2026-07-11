@@ -7,6 +7,7 @@ import Logo from "@/components/Logo";
 const ERROR_MESSAGES: Record<string, string> = {
   google_failed: "Google sign-in didn't go through, try again.",
   google_unconfigured: "Google sign-in isn't set up yet, check back soon.",
+  rate_limited: "Too many sign-in attempts, give it a minute and try again.",
 };
 
 export default function LoginPage() {

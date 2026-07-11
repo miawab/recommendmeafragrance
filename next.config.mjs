@@ -2,9 +2,13 @@ const isDev = process.env.NODE_ENV !== "production";
 
 const CSP = [
   "default-src 'self'",
-  // Next.js dev mode's Fast Refresh/HMR runtime evals code, so 'unsafe-eval'
-  // is only needed in development, never in production builds.
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  // Next.js dev mode's Fast Refresh/HMR runtime evals and injects inline
+  // scripts, so both are only needed in development, never in production
+  // builds (the app has no inline <script> tags or dangerouslySetInnerHTML).
+  `script-src 'self'${isDev ? " 'unsafe-inline' 'unsafe-eval'" : ""}`,
+  // Inline style attributes (animation delays, computed widths/transforms)
+  // are used throughout for dynamic, non-user-controlled values, so
+  // 'unsafe-inline' stays on for style-src in both environments.
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
   "font-src 'self' data:",

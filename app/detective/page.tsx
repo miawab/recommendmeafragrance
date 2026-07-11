@@ -19,6 +19,12 @@ const REVEAL_COST = 100;
 const WRONG_GUESS_COST = 50;
 const MODE_KEY = "rmf:detective:mode";
 const PRICE_LABELS = ["", "Budget", "Mid-Range", "Designer", "Niche", "Ultra"];
+const BRAND_GROUP_LABELS: Record<string, string> = {
+  designer: "Designer house",
+  niche: "Niche house",
+  "arab-house": "Arab house",
+  "mass-market": "Mass-market brand",
+};
 
 type InfoMode = "basic" | "full";
 
@@ -27,6 +33,18 @@ interface AnswerMeta {
   gender: string;
   priceTier: number;
   concentration: string;
+  brand: string;
+  brandGroup: string;
+  nameMask: string;
+}
+
+/** Hangman letters unlock as the score drops: one at 700, two at 400, all
+ * three at 300. Hitting 0 ends the game and reveals the answer. */
+function lettersForScore(score: number): number {
+  if (score <= 300) return 3;
+  if (score <= 400) return 2;
+  if (score <= 700) return 1;
+  return 0;
 }
 
 interface DayState {
@@ -56,6 +74,7 @@ export default function NoteDetectivePage() {
   const [state, setState] = useState<DayState>(EMPTY_STATE);
   const [mode, setMode] = useState<InfoMode>("basic");
   const [meta, setMeta] = useState<AnswerMeta | null>(null);
+  const [nameMask, setNameMask] = useState<string | null>(null);
   const offers = useOffers();
 
   useEffect(() => {
@@ -73,8 +92,24 @@ export default function NoteDetectivePage() {
       body: JSON.stringify({ date, gameName: GAME, action: "meta" }),
     })
       .then((r) => r.json())
-      .then((data: AnswerMeta) => setMeta(data));
+      .then((data: AnswerMeta) => {
+        setMeta(data);
+        setNameMask((m) => m ?? data.nameMask);
+      });
   }, [date]);
+
+  const lettersRevealed = lettersForScore(state.score);
+
+  useEffect(() => {
+    if (lettersRevealed === 0) return;
+    fetch("/api/guess", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ date, gameName: GAME, action: "mask", revealCount: lettersRevealed }),
+    })
+      .then((r) => r.json())
+      .then((data: { nameMask: string }) => setNameMask(data.nameMask));
+  }, [date, lettersRevealed]);
 
   function changeMode(next: InfoMode) {
     setMode(next);
@@ -192,9 +227,24 @@ export default function NoteDetectivePage() {
             <li>Revealing a note costs <strong>{REVEAL_COST}</strong> points.</li>
             <li>A wrong guess costs <strong>{WRONG_GUESS_COST}</strong> points.</li>
             <li>Notes reveal <strong>base first</strong> (hardest to place), then heart, then top.</li>
+            <li>
+              Letters of the name unlock as your score drops: one at <strong>700</strong>, two at{" "}
+              <strong>400</strong>, three at <strong>300</strong>. At 0 the answer is revealed.
+            </li>
           </ul>
         </InfoTooltip>
       </div>
+
+      {nameMask && (
+        <div className="rounded-3xl border-2 border-ink-950/8 bg-cream-100 p-5 shadow-card">
+          <p className="mb-2 text-[11px] font-extrabold uppercase tracking-wider text-ink-400">
+            The name ({lettersRevealed}/3 letters revealed)
+          </p>
+          <p className="font-display text-2xl font-extrabold tracking-[0.25em] text-ink-950 sm:text-3xl">
+            {nameMask}
+          </p>
+        </div>
+      )}
 
       <div className="flex items-center gap-2">
         <div className="inline-flex rounded-full bg-cream-200 p-1">
@@ -220,9 +270,9 @@ export default function NoteDetectivePage() {
         <InfoTooltip label="What Basic and Full Info modes show">
           <p className="font-extrabold text-ink-950 mb-2">Info modes</p>
           <p>
-            <strong>Basic</strong> shows the release year alongside your revealed notes.{" "}
-            <strong>Full Info</strong> also shows gender, price tier, and concentration, extra
-            hints that make guessing easier.
+            <strong>Basic</strong> shows the release year and what kind of house makes it.{" "}
+            <strong>Full Info</strong> also names the exact brand plus gender, price tier, and
+            concentration, much easier.
           </p>
         </InfoTooltip>
       </div>
@@ -232,8 +282,14 @@ export default function NoteDetectivePage() {
           <span className="rounded-full border-2 border-ink-950/10 bg-cream-100 px-3 py-1.5 text-sm font-bold text-ink-900">
             Year: {meta.year ?? "Unknown"}
           </span>
+          <span className="rounded-full border-2 border-ink-950/10 bg-cream-100 px-3 py-1.5 text-sm font-bold text-ink-900">
+            {BRAND_GROUP_LABELS[meta.brandGroup] ?? "Fragrance house"}
+          </span>
           {mode === "full" && (
             <>
+              <span className="rounded-full border-2 border-amber-300 bg-amber-100 px-3 py-1.5 text-sm font-extrabold text-ink-950">
+                By {meta.brand}
+              </span>
               <span className="rounded-full border-2 border-ink-950/10 bg-cream-100 px-3 py-1.5 text-sm font-bold text-ink-900 capitalize">
                 {meta.gender}
               </span>

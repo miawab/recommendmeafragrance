@@ -38,14 +38,12 @@ export default function PrivacyPage() {
         </p>
       </Section>
 
-      <Section title="What we store if you create an account">
+      <Section title="What we store if you sign in">
         <p>
-          Accounts are optional. With a username account we store your username, a securely
-          hashed version of your password (we never store or see the password itself), a login
-          session identifier, and a copy of your game progress so it can follow you across
-          devices. If you sign in with Google instead, we store your Google account identifier,
-          your email address, and your first name for display, alongside the same session and
-          progress data; we never see your Google password and request no access to your Gmail,
+          Accounts are optional and sign-in is via Google. When you sign in we store your Google
+          account identifier, your email address, and your first name for display, plus a login
+          session identifier and a copy of your game progress so it can follow you across
+          devices. We never see your Google password and request no access to your Gmail,
           contacts, or anything beyond basic profile info.
         </p>
         <p>

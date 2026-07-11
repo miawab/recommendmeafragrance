@@ -264,11 +264,11 @@ export default function ChatPage() {
             The Concierge chats with members only.
           </p>
           <p className="text-base font-medium text-ink-400">
-            Make a free account (just a username, no email) and each account gets its own daily
-            chat budget.
+            Sign in with Google (takes ten seconds) and your account gets its own daily chat
+            budget.
           </p>
           <Button asChild size="lg">
-            <Link href="/login">Log in or sign up</Link>
+            <Link href="/login">Sign in with Google</Link>
           </Button>
         </div>
       ) : (

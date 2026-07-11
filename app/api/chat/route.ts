@@ -14,10 +14,11 @@ export const runtime = "nodejs";
 const DAILY_TOKEN_BUDGET = Number(process.env.DAILY_TOKEN_BUDGET ?? 8000);
 const MAX_MESSAGE_CHARS = 500;
 const SLIDING_WINDOW = 5;
-const RATE_LIMIT_PER_MINUTE = 10;
-// Daily per-IP backstop on top of the per-account budget: bounds abuse from
-// someone mass-creating accounts behind one IP.
-const DAILY_MESSAGES_PER_IP = 60;
+const RATE_LIMIT_PER_MINUTE = 20;
+// Daily per-IP backstop on top of the per-account budget. Generous enough
+// for a household or office full of Google accounts behind one IP, while
+// still bounding mass-account abuse from a single address.
+const DAILY_MESSAGES_PER_IP = 300;
 const MODEL = "llama-3.3-70b-versatile";
 
 // Kept deliberately short: this prompt is re-sent with every request, so its

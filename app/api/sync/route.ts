@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 // Generous for years of daily play (shelf + streaks + per-day history), tight
 // enough that the endpoint can't be used as free arbitrary blob storage.
 const MAX_BLOB_BYTES = 256 * 1024;
-const RATE_LIMIT_PER_MINUTE = 30;
+const RATE_LIMIT_PER_MINUTE = 60;
 
 function syncKey(username: string): string {
   return `sync:${username.toLowerCase()}`;

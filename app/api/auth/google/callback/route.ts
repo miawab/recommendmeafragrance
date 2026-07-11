@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
   const origin = req.nextUrl.origin;
   if (!googleConfigured()) return failure(origin);
 
-  const withinRateLimit = await checkRateLimit(`gauth:${clientIp(req)}`, 10);
+  const withinRateLimit = await checkRateLimit(`gauth:${clientIp(req)}`, 30);
   if (!withinRateLimit) return failure(origin);
 
   const state = req.nextUrl.searchParams.get("state");

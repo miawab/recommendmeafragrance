@@ -14,6 +14,8 @@ function makePerfume(overrides: Partial<PerfumeEntry>): PerfumeEntry {
     brandGroup: "designer",
     tier: "famous",
     fameScore: 0.5,
+    rating: null,
+    ratingCount: 0,
     notes: { top: ["bergamot"], heart: ["rose"], base: ["musk"] },
     accords: ["floral"],
     seasons: ["spring"],

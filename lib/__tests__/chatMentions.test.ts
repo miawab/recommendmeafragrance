@@ -14,6 +14,8 @@ function entry(overrides: Partial<PerfumeEntry>): PerfumeEntry {
     brandGroup: "designer",
     tier: "famous",
     fameScore: 50,
+    rating: null,
+    ratingCount: 0,
     notes: { top: [], heart: [], base: [] },
     accords: [],
     seasons: [],

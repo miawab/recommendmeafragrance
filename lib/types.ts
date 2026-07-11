@@ -19,6 +19,9 @@ export interface PerfumeEntry {
   brandGroup: BrandGroup;
   tier: Tier;
   fameScore: number;
+  /** Fragrantica community rating (out of 5) and how many people rated it. */
+  rating: number | null;
+  ratingCount: number;
   notes: NotesPyramid;
   accords: string[];
   seasons: string[];

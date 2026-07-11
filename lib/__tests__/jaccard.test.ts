@@ -14,6 +14,8 @@ function makePerfume(id: string, notes: PerfumeEntry["notes"]): PerfumeEntry {
     brandGroup: "designer",
     tier: "famous",
     fameScore: 0.5,
+    rating: null,
+    ratingCount: 0,
     notes,
     accords: [],
     seasons: [],

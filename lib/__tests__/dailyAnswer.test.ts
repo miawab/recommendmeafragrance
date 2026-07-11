@@ -14,6 +14,8 @@ function makePool(count: number): PerfumeEntry[] {
     brandGroup: "designer",
     tier: "famous",
     fameScore: i / count,
+    rating: null,
+    ratingCount: 0,
     notes: { top: [], heart: [], base: [] },
     accords: [],
     seasons: [],

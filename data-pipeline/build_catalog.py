@@ -1,25 +1,29 @@
 """
 Builds /public/data/catalog-core.json, catalog-full.json and notes.json from the raw
-Fragrantica CSV (./data-pipeline/raw/fra_cleaned.csv). Offline, deterministic, no network calls.
+Fragrantica CSV (./data-pipeline/raw/fra_cleaned.csv), anchored to the FragranceShop
+feed (./data-pipeline/raw/fragranceshop_feed.json, fetched via fetch_cj_feed.ts):
+only perfumes FragranceShop actually sells make the catalog, so every entry can
+carry an affiliate link. Popularity/ratings come from Fragrantica.
 
 Run: cd data-pipeline && python build_catalog.py
 """
 import json
 import re
 import unicodedata
-from collections import Counter
-from difflib import SequenceMatcher
+from collections import Counter, defaultdict
 from pathlib import Path
 
 import pandas as pd
 
 ROOT = Path(__file__).parent
 RAW_CSV = ROOT / "raw" / "fra_cleaned.csv"
-INCLUDE_FAMOUS_TXT = ROOT / "include_famous.txt"
+FEED_JSON = ROOT / "raw" / "fragranceshop_feed.json"
 PUBLIC_DATA = ROOT.parent / "public" / "data"
 
-FAMOUS_TARGET = 300
-TOTAL_CAP = 2500
+# Top 250 by Fragrantica review volume power the guessing games; the rest of
+# the matched inventory feeds roulette, blind date, autocomplete, etc.
+FAMOUS_TARGET = 250
+TOTAL_CAP = 4000
 
 # ---------------------------------------------------------------------------
 # brand -> (priceTier, brandGroup) hand-tuned mapping. priceTier: 1 budget (<$50),
@@ -301,49 +305,83 @@ def make_fun_fact(name: str, top: list[str], base: list[str], accords: list[str]
 
 
 # ---------------------------------------------------------------------------
-# include_famous.txt fuzzy matching
+# FragranceShop feed matching. This is a deliberate Python port of the runtime
+# matcher in lib/offerMatching.ts (same noise pattern, stopwords, Dice
+# coefficient, and 0.85 threshold): if the pipeline admits an entry because
+# the shop sells it, the runtime offer sync will find that same product.
 # ---------------------------------------------------------------------------
-def norm_key(s: str) -> str:
-    s = strip_accents(s.strip().lower())
-    s = re.sub(r"[^a-z0-9 ]", " ", s)
-    return re.sub(r"\s+", " ", s).strip()
+FEED_NOISE = re.compile(
+    r"\b(edt|edp|eau de toilette|eau de parfum|parfum|perfume|cologne|fragrance mist"
+    r"|for men|for women|for her|for him|for unisex|unisex|spray|splash|roll-?on|tester|gift set"
+    r"|travel size|(\d+/\d+|\d+(\.\d+)?)\s?(ml|oz))\b",
+    re.I,
+)
+FEED_STOPWORDS = {"the"}
+NAME_MATCH_THRESHOLD = 0.85
+# Imitation oils, bundles, and non-perfume products (lotions, deodorants,
+# aftershaves, diffusers...) shouldn't anchor a perfume's presence in the
+# catalog; the real bottle has to be on sale.
+FEED_EXCLUDE = re.compile(
+    r"type perfume|gift set|variety|body lotion|body cream|body wash|body oil"
+    r"|deodorant|after ?shave|shower gel|diffuser|concentrated oil|hair mist"
+    r"|body mist|fragrance mist|candle|soap|shampoo|attar",
+    re.I,
+)
 
 
-def load_include_list() -> list[tuple[str, str]]:
-    if not INCLUDE_FAMOUS_TXT.exists():
-        return []
-    pairs = []
-    for line in INCLUDE_FAMOUS_TXT.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line or line.startswith("#") or "|" not in line:
+def normalize_product_name(raw: str) -> str:
+    s = FEED_NOISE.sub(" ", raw.lower())
+    s = re.sub(r"[^a-z0-9\s]", " ", s)
+    words = [w for w in s.split() if w and w not in FEED_STOPWORDS]
+    return " ".join(words)
+
+
+def token_set_ratio(a_norm: str, b_norm: str) -> float:
+    set_a = set(a_norm.split())
+    set_b = set(b_norm.split())
+    if not set_a or not set_b:
+        return 0.0
+    inter = len(set_a & set_b)
+    return (2 * inter) / (len(set_a) + len(set_b))
+
+
+def squash_brand(s: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", s.lower())
+
+
+def load_feed_index() -> dict[str, list[str]]:
+    """squashed brand -> list of normalized product names sold under it."""
+    if not FEED_JSON.exists():
+        raise SystemExit(f"Missing feed at {FEED_JSON}, run: npx tsx data-pipeline/fetch_cj_feed.ts")
+    rows = json.loads(FEED_JSON.read_text(encoding="utf-8"))
+    index: dict[str, list[str]] = defaultdict(list)
+    kept = 0
+    for r in rows:
+        if FEED_EXCLUDE.search(r.get("name", "")):
             continue
-        brand, name = line.split("|", 1)
-        pairs.append((brand.strip(), name.strip()))
-    return pairs
-
-
-def match_include_list(df: pd.DataFrame, pairs: list[tuple[str, str]]) -> set[int]:
-    brand_norm = df["Brand"].apply(lambda s: norm_key(s.replace("-", " ")))
-    name_norm = df["Perfume"].apply(lambda s: norm_key(s.replace("-", " ")))
-    matched_idx = set()
-    for brand, name in pairs:
-        bkey, nkey = norm_key(brand), norm_key(name)
-        brand_hits = df.index[
-            brand_norm.str.contains(re.escape(bkey), na=False)
-            | brand_norm.apply(lambda b: b in bkey or bkey in b)
-        ]
-        if len(brand_hits) == 0:
+        norm = normalize_product_name(r.get("name", ""))
+        if not norm:
             continue
-        best_idx, best_ratio = None, 0.0
-        for idx in brand_hits:
-            ratio = SequenceMatcher(None, name_norm[idx], nkey).ratio()
-            if nkey in name_norm[idx] or name_norm[idx] in nkey:
-                ratio = max(ratio, 0.9)
-            if ratio > best_ratio:
-                best_ratio, best_idx = ratio, idx
-        if best_idx is not None and best_ratio >= 0.55:
-            matched_idx.add(best_idx)
-    return matched_idx
+        index[squash_brand(r.get("brand", ""))].append(norm)
+        kept += 1
+    print(f"Feed: {len(rows)} rows, {kept} usable after excluding imitations/bundles")
+    return index
+
+
+def feed_sells(brand_display: str, name_display: str, index: dict[str, list[str]]) -> bool:
+    brand_sq = squash_brand(brand_display)
+    candidates = []
+    for feed_brand_sq, names in index.items():
+        if not feed_brand_sq or not brand_sq:
+            continue
+        if brand_sq == feed_brand_sq or brand_sq in feed_brand_sq or feed_brand_sq in brand_sq:
+            candidates.extend(names)
+    if not candidates:
+        return False
+    target = normalize_product_name(name_display)
+    if not target:
+        return False
+    return any(token_set_ratio(target, c) >= NAME_MATCH_THRESHOLD for c in candidates)
 
 
 # ---------------------------------------------------------------------------
@@ -368,15 +406,21 @@ def main():
 
     df["fameScore"] = df["Rating Count"].rank(pct=True)
 
-    include_pairs = load_include_list()
-    include_idx = match_include_list(df, include_pairs)
+    # Anchor to the shop's inventory: an entry only exists if FragranceShop
+    # sells it, so every card in the app can carry a working buy link.
+    feed_index = load_feed_index()
+    brand_display = df["Brand"].apply(lambda s: deslug_title(str(s).strip().lower()))
+    name_display = df["Perfume"].apply(lambda s: str(s).strip().lower().replace("-", " "))
+    sold_mask = [
+        feed_sells(brand_display[i], name_display[i], feed_index) for i in df.index
+    ]
+    df = df[pd.Series(sold_mask, index=df.index)].reset_index(drop=True)
+    print(f"Fragrantica rows matched to shop inventory: {len(df)}")
 
-    top_by_score = set(df.sort_values("fameScore", ascending=False).head(FAMOUS_TARGET).index)
-    famous_idx = top_by_score | include_idx
-
-    remaining = df.drop(index=famous_idx).sort_values("fameScore", ascending=False)
+    ranked = df.sort_values("fameScore", ascending=False)
+    famous_idx = set(ranked.head(FAMOUS_TARGET).index)
     deep_budget = max(TOTAL_CAP - len(famous_idx), 0)
-    deep_idx = set(remaining.head(deep_budget).index)
+    deep_idx = set(ranked.index[len(famous_idx) : len(famous_idx) + deep_budget])
 
     note_counter = Counter()
     entries = []
@@ -410,6 +454,8 @@ def main():
         name = deslug_title(name_slug)
         brand = deslug_title(brand_slug)
 
+        rating_value = row["Rating Value"]
+        rating_count = row["Rating Count"]
         entry = {
             "id": entry_id,
             "name": name,
@@ -421,6 +467,8 @@ def main():
             "brandGroup": brand_group,
             "tier": tier,
             "fameScore": round(float(row["fameScore"]), 4),
+            "rating": round(float(rating_value), 2) if pd.notna(rating_value) else None,
+            "ratingCount": int(rating_count) if pd.notna(rating_count) else 0,
             "notes": {"top": top_notes, "heart": heart_notes, "base": base_notes},
             "accords": accords,
             "seasons": seasons,
@@ -451,21 +499,10 @@ def main():
         json.dumps(notes_out, ensure_ascii=False, indent=None), encoding="utf-8"
     )
 
-    unmatched = []
-    matched_keys = {norm_key(f"{df.loc[i,'Brand']} {df.loc[i,'Perfume']}".replace("-", " ")) for i in include_idx}
-    for brand, name in include_pairs:
-        key = norm_key(f"{brand} {name}")
-        hit = any(SequenceMatcher(None, key, mk).ratio() > 0.6 for mk in matched_keys)
-        if not hit:
-            unmatched.append(f"{brand} | {name}")
-    (ROOT / "unmatched_include.txt").write_text("\n".join(unmatched), encoding="utf-8")
-
-    print(f"Loaded {len(df)} rows from raw CSV")
-    print(f"Famous tier: {len(famous_entries)} (target {FAMOUS_TARGET}, include-list matched {len(include_idx)})")
+    print(f"Famous tier: {len(famous_entries)} (target {FAMOUS_TARGET})")
     print(f"Deep tier: {len(entries) - len(famous_entries)}")
     print(f"Total catalog entries: {len(entries)} (cap {TOTAL_CAP})")
     print(f"Canonical notes: {len(notes_out)}")
-    print(f"Unmatched include-list lines: {len(unmatched)} (see unmatched_include.txt)")
     print(f"Wrote catalog-core.json, catalog-full.json, notes.json to {PUBLIC_DATA}")
 
 

@@ -26,15 +26,20 @@ export interface MatchedOffer {
 }
 
 const NOISE_PATTERN =
-  /\b(edt|edp|eau de toilette|eau de parfum|parfum|cologne|for men|for women|for her|for him|spray|tester|\d+(\.\d+)?\s?(ml|oz))\b/gi;
+  /\b(edt|edp|eau de toilette|eau de parfum|parfum|perfume|cologne|fragrance mist|for men|for women|for her|for him|for unisex|unisex|spray|splash|roll-?on|tester|gift set|travel size|(\d+\/\d+|\d+(\.\d+)?)\s?(ml|oz))\b/gi;
+
+// "the" carries no signal and one-word names like "Dreamer" otherwise miss
+// their catalog twin "The Dreamer" on token-set similarity.
+const STOPWORDS = new Set(["the"]);
 
 export function normalizeProductName(raw: string): string {
   return raw
     .toLowerCase()
     .replace(NOISE_PATTERN, " ")
     .replace(/[^a-z0-9\s]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+    .split(/\s+/)
+    .filter((w) => w && !STOPWORDS.has(w))
+    .join(" ");
 }
 
 /** Token-set similarity (Dice coefficient over unique word sets), a lightweight
@@ -58,12 +63,19 @@ const BRAND_ALIASES: Record<string, string[]> = {
   "d&g": ["dolce gabbana", "dolce and gabbana"],
 };
 
+/** Squash to bare alphanumerics so punctuation and spacing differences can't
+ * break brand comparison ("Dolce & Gabbana" vs "Dolce Gabbana"). */
+function squashBrand(s: string): string {
+  return s.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
 function brandMatches(catalogBrand: string, feedBrand: string): boolean {
-  const a = catalogBrand.toLowerCase().trim();
-  const b = feedBrand.toLowerCase().trim();
+  const a = squashBrand(catalogBrand);
+  const b = squashBrand(feedBrand);
+  if (!a || !b) return true; // missing brand: fall through to name similarity
   if (a === b || a.includes(b) || b.includes(a)) return true;
-  const aliases = BRAND_ALIASES[a] ?? [];
-  return aliases.some((alias) => alias === b || b.includes(alias));
+  const aliases = BRAND_ALIASES[catalogBrand.toLowerCase().trim()] ?? [];
+  return aliases.some((alias) => squashBrand(alias) === b || b.includes(squashBrand(alias)));
 }
 
 const MIN_VOLUME_ML = 50;

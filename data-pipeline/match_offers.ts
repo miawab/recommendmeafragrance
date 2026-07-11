@@ -3,6 +3,7 @@
  * /public/data/offers.json. Also usable locally against a sample feed CSV.
  *
  * Usage:
+ *   pnpm tsx data-pipeline/match_offers.ts --feed-json data-pipeline/raw/fragranceshop_feed.json
  *   pnpm tsx data-pipeline/match_offers.ts --feed data-pipeline/sample_feed.csv
  *   pnpm tsx data-pipeline/match_offers.ts --stub   (placeholder offers, no real feed yet)
  */
@@ -21,8 +22,10 @@ const UNMATCHED_REPORT_PATH = path.join(ROOT, "data-pipeline", "unmatched_offers
 function parseArgs() {
   const args = process.argv.slice(2);
   const feedIdx = args.indexOf("--feed");
+  const feedJsonIdx = args.indexOf("--feed-json");
   return {
     feedPath: feedIdx >= 0 ? args[feedIdx + 1] : null,
+    feedJsonPath: feedJsonIdx >= 0 ? args[feedJsonIdx + 1] : null,
     stub: args.includes("--stub"),
   };
 }
@@ -37,9 +40,9 @@ function loadOverrides(): Record<string, Partial<MatchedOffer>> {
 }
 
 function main() {
-  const { feedPath, stub } = parseArgs();
-  if (!feedPath && !stub) {
-    console.error("Usage: match_offers.ts --feed <path.csv> | --stub");
+  const { feedPath, feedJsonPath, stub } = parseArgs();
+  if (!feedPath && !feedJsonPath && !stub) {
+    console.error("Usage: match_offers.ts --feed-json <path.json> | --feed <path.csv> | --stub");
     process.exit(1);
   }
 
@@ -55,8 +58,10 @@ function main() {
     }
     console.log(`Generated stub offers for ${famous.length} famous-tier entries.`);
   } else {
-    const text = fs.readFileSync(feedPath as string, "utf-8");
-    const feed = csvRowsToFeedRows(parseCsv(text));
+    // --feed-json takes the FeedRow[] dump from fetch_cj_feed.ts as-is.
+    const feed = feedJsonPath
+      ? (JSON.parse(fs.readFileSync(feedJsonPath, "utf-8")) as ReturnType<typeof csvRowsToFeedRows>)
+      : csvRowsToFeedRows(parseCsv(fs.readFileSync(feedPath as string, "utf-8")));
     offers = buildOffersFromFeed(catalog, feed, overrides);
 
     const matchedFamous = famous.filter((p) => offers[p.id]).length;

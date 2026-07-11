@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { SprayCan } from "lucide-react";
+import { SprayCan, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -67,6 +67,15 @@ export default function ResultCard({ perfume, surface, offer, headline, classNam
             >
               {perfume.name}
             </Link>
+            {perfume.rating != null && perfume.ratingCount > 0 && (
+              <p className="mt-1 flex items-center gap-1 text-sm font-bold text-ink-900">
+                <Star className="h-4 w-4 fill-amber-400 text-amber-400" strokeWidth={2} />
+                {perfume.rating.toFixed(2)}
+                <span className="font-medium text-ink-400">
+                  · {formatCount(perfume.ratingCount)} ratings
+                </span>
+              </p>
+            )}
           </div>
         </div>
         <Badge className={`shrink-0 ${tier.classes}`}>{tier.label}</Badge>
@@ -101,6 +110,11 @@ export default function ResultCard({ perfume, surface, offer, headline, classNam
       </p>
     </Card>
   );
+}
+
+function formatCount(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k`;
+  return String(n);
 }
 
 function NotesColumn({ label, notes }: { label: string; notes: string[] }) {

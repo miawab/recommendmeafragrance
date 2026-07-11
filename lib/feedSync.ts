@@ -83,6 +83,18 @@ function parseVolumeMl(title: string): number | undefined {
   return undefined;
 }
 
+/** CJ ships XML-escaped text ("Dolce &amp; Gabbana"); undo the few entities
+ * that actually occur so brand/name matching sees the real characters. */
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&amp;/g, "&")
+    .replace(/&#0?39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+}
+
 /** Feed titles usually lead with the brand ("Azha Black Ruby Perfume for
  * Women..."), but catalog names don't include the brand, so leaving it in
  * drags the token-set similarity below the match threshold. */
@@ -145,16 +157,17 @@ export async function fetchCjAdvertiserProducts(
 
     for (const p of page.resultList) {
       if (!p.linkCode?.clickUrl || !p.price) continue;
-      const brand = p.brand ?? "";
+      const brand = decodeEntities(p.brand ?? "");
+      const title = decodeEntities(p.title);
       rows.push({
         brand,
-        name: stripBrandPrefix(p.title, brand),
+        name: stripBrandPrefix(title, brand),
         price: Number(p.price.amount),
         currency: p.price.currency,
-        merchant: (p.advertiserName || "Unknown").trim(),
+        merchant: decodeEntities((p.advertiserName || "Unknown").trim()),
         deepLink: p.linkCode.clickUrl,
         image: p.imageLink || undefined,
-        volumeMl: parseVolumeMl(p.title),
+        volumeMl: parseVolumeMl(title),
         // Google-feed-style enum: in_stock / out_of_stock / preorder / backorder.
         inStock: p.availability ? p.availability.toLowerCase() === "in_stock" : true,
       });

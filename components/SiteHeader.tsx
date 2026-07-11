@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AuthWidget from "@/components/AuthWidget";
+import Logo from "@/components/Logo";
 import MobileNav from "@/components/MobileNav";
 import { Button } from "@/components/ui/button";
 
@@ -12,9 +13,10 @@ export default function SiteHeader() {
             viewport width. */}
         <Link
           href="/"
-          className="min-w-0 flex-1 truncate font-display text-lg font-extrabold tracking-tight text-ink-950 lowercase sm:text-2xl"
+          className="flex min-w-0 flex-1 items-center gap-2 font-display text-lg font-extrabold tracking-tight text-ink-950 lowercase sm:text-2xl"
         >
-          recommendmeafragrance
+          <Logo className="h-8 w-8 shrink-0 sm:h-9 sm:w-9" />
+          <span className="truncate">recommendmeafragrance</span>
         </Link>
 
         {/* Desktop: full inline nav with labeled buttons. Mobile: a single

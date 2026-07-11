@@ -143,7 +143,9 @@ export default function ChatPage() {
           ...nextTurns,
           {
             role: "assistant",
-            content: data.recommendations.reason,
+            // NORMAL replies carry their own text with cards attached;
+            // WRAPUP responses only have the one-line reason.
+            content: data.reply || data.recommendations.reason,
             recommendations: data.recommendations,
           },
         ]);

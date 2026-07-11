@@ -56,8 +56,10 @@ export default function Home() {
     const date = todayUTC();
     const state: Record<string, boolean> = {};
     for (const g of DAILY_GAMES) {
-      const entry = getHistory(g.key)[date] as { completed?: boolean } | undefined;
-      state[g.key] = !!entry?.completed;
+      const history = getHistory(g.key);
+      const easy = history[`${date}:easy`] as { completed?: boolean } | undefined;
+      const hard = history[`${date}:hard`] as { completed?: boolean } | undefined;
+      state[g.key] = !!easy?.completed || !!hard?.completed;
     }
     setCompletedToday(state);
   }, []);

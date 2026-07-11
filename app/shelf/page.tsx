@@ -116,7 +116,9 @@ export default function ShelfPage() {
                   silently overflow the rounded border. */}
               <div className="mt-4 flex gap-1 sm:gap-1.5">
                 {dates.map((d) => {
-                  const entry = history[d] as { completed?: boolean } | undefined;
+                  const easy = history[`${d}:easy`] as { completed?: boolean } | undefined;
+                  const hard = history[`${d}:hard`] as { completed?: boolean } | undefined;
+                  const entry = easy?.completed ? easy : hard;
                   return (
                     <span
                       key={d}

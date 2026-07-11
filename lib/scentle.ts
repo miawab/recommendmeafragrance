@@ -53,11 +53,27 @@ export function computeScentleFeedback(
   return { correct, brand, year, gender, priceTier, concentration, sharedNotes };
 }
 
-/** Note Detective reveals individual notes one at a time: base notes first (hardest),
- * then heart, then top. `count` is how many notes (across that order) are revealed so far. */
+/** Note Detective reveals individual notes one at a time, round-robin across the
+ * pyramid: one top, one heart, one base, then back to top, and so on. A layer
+ * that's run out is skipped and the cycle continues through the rest.
+ * `count` is how many notes (across that cycle) are revealed so far. */
 export function getRevealedNotes(answer: PerfumeEntry, count: number): string[] {
-  const order = [...answer.notes.base, ...answer.notes.heart, ...answer.notes.top];
-  return order.slice(0, Math.max(0, count));
+  const layers = [answer.notes.top, answer.notes.heart, answer.notes.base];
+  const cursors = [0, 0, 0];
+  const result: string[] = [];
+  const target = Math.max(0, count);
+  let progressed = true;
+  while (result.length < target && progressed) {
+    progressed = false;
+    for (let l = 0; l < layers.length && result.length < target; l++) {
+      if (cursors[l] < layers[l].length) {
+        result.push(layers[l][cursors[l]]);
+        cursors[l]++;
+        progressed = true;
+      }
+    }
+  }
+  return result;
 }
 
 export function totalNoteCount(answer: PerfumeEntry): number {

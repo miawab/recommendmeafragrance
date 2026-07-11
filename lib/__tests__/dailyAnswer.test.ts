@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { getDailyAnswer } from "../dailyAnswer";
+import { getDailyAnswer, getDailyAnswerPair } from "../dailyAnswer";
 import type { PerfumeEntry } from "../types";
 
-function makePool(count: number): PerfumeEntry[] {
+function makePool(
+  count: number,
+  tier: PerfumeEntry["tier"] = "famous",
+  prefix = "perfume"
+): PerfumeEntry[] {
   return Array.from({ length: count }, (_, i) => ({
-    id: `perfume-${i}`,
+    id: `${prefix}-${i}`,
     name: `Perfume ${i}`,
     brand: "Brand",
     year: 2020,
@@ -12,7 +16,7 @@ function makePool(count: number): PerfumeEntry[] {
     concentration: "EDP",
     priceTier: 2,
     brandGroup: "designer",
-    tier: "famous",
+    tier,
     fameScore: i / count,
     rating: null,
     ratingCount: 0,
@@ -60,5 +64,38 @@ describe("getDailyAnswer", () => {
       const answer = getDailyAnswer(pool, date, "scentle");
       expect(pool.some((p) => p.id === answer.id)).toBe(true);
     }
+  });
+});
+
+describe("getDailyAnswerPair", () => {
+  const famous = makePool(300, "famous", "famous");
+  const deep = makePool(300, "deep", "deep");
+  const full = [...famous, ...deep];
+
+  it("picks the easy answer from the famous pool and hard from the deeper catalog", () => {
+    const { easy, hard } = getDailyAnswerPair(famous, full, "2026-07-11", "scentle");
+    expect(famous.some((p) => p.id === easy.id)).toBe(true);
+    expect(deep.some((p) => p.id === hard.id)).toBe(true);
+  });
+
+  it("is deterministic for the same date and game", () => {
+    const a = getDailyAnswerPair(famous, full, "2026-07-11", "detective");
+    const b = getDailyAnswerPair(famous, full, "2026-07-11", "detective");
+    expect(a.easy.id).toBe(b.easy.id);
+    expect(a.hard.id).toBe(b.hard.id);
+  });
+
+  it("never returns the same entry for both easy and hard", () => {
+    for (let i = 0; i < 15; i++) {
+      const date = `2026-09-${String(i + 1).padStart(2, "0")}`;
+      const { easy, hard } = getDailyAnswerPair(famous, full, date, "scentle");
+      expect(easy.id).not.toBe(hard.id);
+    }
+  });
+
+  it("falls back to the famous pool for hard when there's no deeper catalog", () => {
+    const { easy, hard } = getDailyAnswerPair(famous, famous, "2026-07-11", "scentle");
+    expect(famous.some((p) => p.id === hard.id)).toBe(true);
+    expect(hard.id).not.toBe(easy.id);
   });
 });

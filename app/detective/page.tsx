@@ -8,16 +8,23 @@ import ResultCard from "@/components/ResultCard";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
 import { loadFullCatalog } from "@/lib/catalog";
+import type { DailyDifficulty } from "@/lib/dailyAnswer";
 import { addToShelf, getHistory, recordDailyPlay, setHistory } from "@/lib/shelf";
 import type { PerfumeEntry } from "@/lib/types";
 import { todayUTC } from "@/lib/seededRandom";
+import { revealPctFor } from "@/lib/detectiveMask";
 import { useOffers } from "@/lib/useOffers";
 
 const GAME = "detective";
 const START_SCORE = 1000;
-const REVEAL_COST = 100;
+// Half the starting score is set aside for note reveals, split evenly across
+// however many notes the answer actually has, so a 6-note perfume and a
+// 16-note perfume each cost the same total share to fully reveal.
+const REVEAL_BUDGET_SHARE = 0.5;
+const FALLBACK_REVEAL_COST = 50;
 const WRONG_GUESS_COST = 50;
 const MODE_KEY = "rmf:detective:mode";
+const DIFFICULTY_KEY = "rmf:detective:difficulty";
 const PRICE_LABELS = ["", "Budget", "Mid-Range", "Designer", "Niche", "Ultra"];
 const BRAND_GROUP_LABELS: Record<string, string> = {
   designer: "Designer house",
@@ -36,18 +43,12 @@ interface AnswerMeta {
   brand: string;
   brandGroup: string;
   nameMask: string;
+  totalNotes: number;
 }
 
-/** Name-reveal stages unlock as the score drops; each stage uncovers a
- * percentage of the name's letters (server-side), so short and long names
- * are hinted equally. Hitting 0 ends the game and reveals the answer. */
-const STAGE_PCT_LABELS = [0, 15, 30, 45];
-
-function revealStageForScore(score: number): number {
-  if (score <= 300) return 3;
-  if (score <= 400) return 2;
-  if (score <= 700) return 1;
-  return 0;
+function revealCostFor(totalNotes: number | undefined): number {
+  if (!totalNotes || totalNotes <= 0) return FALLBACK_REVEAL_COST;
+  return Math.max(1, Math.round((START_SCORE * REVEAL_BUDGET_SHARE) / totalNotes));
 }
 
 interface DayState {
@@ -76,47 +77,73 @@ export default function NoteDetectivePage() {
   const [catalog, setCatalog] = useState<PerfumeEntry[]>([]);
   const [state, setState] = useState<DayState>(EMPTY_STATE);
   const [mode, setMode] = useState<InfoMode>("basic");
+  const [difficulty, setDifficulty] = useState<DailyDifficulty>("easy");
   const [meta, setMeta] = useState<AnswerMeta | null>(null);
   const [nameMask, setNameMask] = useState<string | null>(null);
   const offers = useOffers();
+  const historyKey = `${date}:${difficulty}`;
 
+  // One-time setup: load the catalog and any saved preferences.
   useEffect(() => {
     loadFullCatalog().then(setCatalog);
-    const saved = getHistory(GAME)[date] as DayState | undefined;
-    if (saved) setState(saved);
-    else track("game_start", { game: GAME, date });
-
     const savedMode = window.localStorage.getItem(MODE_KEY);
     if (savedMode === "basic" || savedMode === "full") setMode(savedMode);
+    const savedDifficulty = window.localStorage.getItem(DIFFICULTY_KEY);
+    if (savedDifficulty === "easy" || savedDifficulty === "hard") setDifficulty(savedDifficulty);
+  }, []);
+
+  // Today's puzzle for the current difficulty: easy and hard are different
+  // fragrances, so each gets its own saved state and its own meta/mask fetch.
+  useEffect(() => {
+    const saved = getHistory(GAME)[historyKey] as DayState | undefined;
+    if (saved) {
+      setState(saved);
+    } else {
+      setState(EMPTY_STATE);
+      track("game_start", { game: GAME, date, difficulty });
+    }
+    setMeta(null);
+    setNameMask(null);
 
     fetch("/api/guess", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ date, gameName: GAME, action: "meta" }),
+      body: JSON.stringify({ date, gameName: GAME, action: "meta", difficulty }),
     })
       .then((r) => r.json())
       .then((data: AnswerMeta) => {
         setMeta(data);
         setNameMask((m) => m ?? data.nameMask);
       });
-  }, [date]);
-
-  const revealStage = revealStageForScore(state.score);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date, difficulty, historyKey]);
 
   useEffect(() => {
-    if (revealStage === 0) return;
+    if (state.revealCount === 0) return;
     fetch("/api/guess", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ date, gameName: GAME, action: "mask", revealCount: revealStage }),
+      body: JSON.stringify({
+        date,
+        gameName: GAME,
+        action: "mask",
+        revealCount: state.revealCount,
+        difficulty,
+      }),
     })
       .then((r) => r.json())
       .then((data: { nameMask: string }) => setNameMask(data.nameMask));
-  }, [date, revealStage]);
+  }, [date, difficulty, state.revealCount]);
 
   function changeMode(next: InfoMode) {
     setMode(next);
     window.localStorage.setItem(MODE_KEY, next);
+  }
+
+  function changeDifficulty(next: DailyDifficulty) {
+    if (next === difficulty) return;
+    setDifficulty(next);
+    window.localStorage.setItem(DIFFICULTY_KEY, next);
   }
 
   useEffect(() => {
@@ -124,13 +151,13 @@ export default function NoteDetectivePage() {
       fetch("/api/guess", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date, gameName: GAME, action: "reveal" }),
+        body: JSON.stringify({ date, gameName: GAME, action: "reveal", difficulty }),
       })
         .then((r) => r.json())
         .then((data: { answer: PerfumeEntry }) => {
           const next = { ...state, answerId: data.answer.id };
           setState(next);
-          setHistory(GAME, date, next);
+          setHistory(GAME, historyKey, next);
           addToShelf(data.answer.id, GAME);
         });
     }
@@ -145,7 +172,13 @@ export default function NoteDetectivePage() {
     const res = await fetch("/api/guess", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ date, gameName: GAME, action: "peek", revealCount: requestedCount }),
+      body: JSON.stringify({
+        date,
+        gameName: GAME,
+        action: "peek",
+        revealCount: requestedCount,
+        difficulty,
+      }),
     });
     const data: { notes: string[] } = await res.json();
     const fullyRevealed = data.notes.length <= state.revealedNotes.length;
@@ -153,11 +186,11 @@ export default function NoteDetectivePage() {
       ...state,
       revealCount: requestedCount,
       revealedNotes: data.notes,
-      score: Math.max(0, state.score - (fullyRevealed ? 0 : REVEAL_COST)),
+      score: Math.max(0, state.score - (fullyRevealed ? 0 : revealCostFor(meta?.totalNotes))),
       fullyRevealed,
     };
     setState(next);
-    setHistory(GAME, date, next);
+    setHistory(GAME, historyKey, next);
   }
 
   async function handleGuess(perfume: PerfumeEntry) {
@@ -171,6 +204,7 @@ export default function NoteDetectivePage() {
         action: "guess",
         guessId: perfume.id,
         revealCount: state.revealCount,
+        difficulty,
       }),
     });
     const data: { correct: boolean; notes: string[]; answer?: PerfumeEntry } = await res.json();
@@ -183,10 +217,10 @@ export default function NoteDetectivePage() {
         answerId: perfume.id,
       };
       setState(next);
-      setHistory(GAME, date, next);
+      setHistory(GAME, historyKey, next);
       recordDailyPlay(GAME, date, true);
       addToShelf(perfume.id, GAME);
-      track("game_complete", { game: GAME, won: true, score: state.score });
+      track("game_complete", { game: GAME, won: true, score: state.score, difficulty });
       return;
     }
 
@@ -200,10 +234,10 @@ export default function NoteDetectivePage() {
       won: false,
     };
     setState(next);
-    setHistory(GAME, date, next);
+    setHistory(GAME, historyKey, next);
     if (outOfPoints) {
       recordDailyPlay(GAME, date, false);
-      track("game_complete", { game: GAME, won: false, score });
+      track("game_complete", { game: GAME, won: false, score, difficulty });
     }
   }
 
@@ -217,32 +251,57 @@ export default function NoteDetectivePage() {
           Note Detective
         </h1>
         <p className="text-lg font-medium text-ink-400 mt-2">
-          Notes reveal from the base up. Guess before you run out of points.
+          Notes reveal top, heart, then base, cycling. Guess before you run out of points.
         </p>
       </div>
 
-      <div className="flex items-center gap-3 text-xl font-extrabold text-ink-900">
+      <div className="flex flex-wrap items-center gap-3 text-xl font-extrabold text-ink-900">
         <span>Score: {state.score}</span>
         <InfoTooltip label="How scoring works">
           <p className="font-extrabold text-ink-950 mb-2">Scoring</p>
           <ul className="flex flex-col gap-1.5">
             <li>You start at <strong>{START_SCORE}</strong> points.</li>
-            <li>Revealing a note costs <strong>{REVEAL_COST}</strong> points.</li>
-            <li>A wrong guess costs <strong>{WRONG_GUESS_COST}</strong> points.</li>
-            <li>Notes reveal <strong>base first</strong> (hardest to place), then heart, then top.</li>
             <li>
-              The name uncovers as your score drops: <strong>15%</strong> at 700,{" "}
-              <strong>30%</strong> at 400, <strong>45%</strong> at 300. At 0 the answer is
-              revealed.
+              Revealing a note costs <strong>{revealCostFor(meta?.totalNotes)}</strong> points
+              this puzzle, half your starting score split evenly across every note this perfume
+              has, so it&apos;s fair whether it has 6 notes or 16.
+            </li>
+            <li>A wrong guess costs <strong>{WRONG_GUESS_COST}</strong> points.</li>
+            <li>
+              Notes reveal one top, one heart, one base at a time, cycling. A layer that runs
+              out is skipped, the rest keep cycling.
+            </li>
+            <li>
+              The name uncovers about <strong>7%</strong> more letters each time you reveal a
+              note, not tied to your score. At 0 points the answer is revealed.
+            </li>
+            <li>
+              <strong>Easy</strong> picks a famous, well-known bottle. <strong>Hard</strong>{" "}
+              digs into the deeper catalog.
             </li>
           </ul>
         </InfoTooltip>
+        <div className="ml-auto flex gap-1.5 rounded-full border-2 border-ink-950/10 bg-cream-100 p-1">
+          {(["easy", "hard"] as DailyDifficulty[]).map((level) => (
+            <button
+              key={level}
+              onClick={() => changeDifficulty(level)}
+              className={`tap-target rounded-full px-4 py-1.5 text-sm font-extrabold capitalize transition-all ${
+                difficulty === level
+                  ? "bg-amber-400 text-ink-950 shadow-card"
+                  : "text-ink-400 hover:text-ink-950"
+              }`}
+            >
+              {level}
+            </button>
+          ))}
+        </div>
       </div>
 
       {nameMask && (
         <div className="rounded-3xl border-2 border-ink-950/8 bg-cream-100 p-5 shadow-card">
           <p className="mb-2 text-[11px] font-extrabold uppercase tracking-wider text-ink-400">
-            The name ({STAGE_PCT_LABELS[revealStage]}% revealed)
+            The name ({Math.round(revealPctFor(state.revealCount) * 100)}% revealed)
           </p>
           <p className="font-display text-2xl font-extrabold tracking-[0.25em] text-ink-950 sm:text-3xl">
             {nameMask}
@@ -326,12 +385,12 @@ export default function NoteDetectivePage() {
         <div className="flex flex-col gap-4">
           <Button
             onClick={revealNext}
-            disabled={state.fullyRevealed}
+            disabled={state.fullyRevealed || !meta}
             variant="outline"
             size="lg"
             className="self-start"
           >
-            Reveal next note (-{REVEAL_COST})
+            Reveal next note (-{revealCostFor(meta?.totalNotes)})
           </Button>
           <Autocomplete catalog={catalog} onSelect={handleGuess} excludeIds={excludeIds} />
         </div>

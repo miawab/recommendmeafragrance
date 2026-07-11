@@ -86,17 +86,15 @@ describe("getRevealedNotes", () => {
     expect(getRevealedNotes(answer, 0)).toEqual([]);
   });
 
-  it("reveals base notes one at a time, first", () => {
-    expect(getRevealedNotes(answer, 1)).toEqual(["musk"]);
-    expect(getRevealedNotes(answer, 2)).toEqual(["musk", "amber"]);
+  it("cycles one top, one heart, one base at a time", () => {
+    expect(getRevealedNotes(answer, 1)).toEqual(["bergamot"]);
+    expect(getRevealedNotes(answer, 2)).toEqual(["bergamot", "rose"]);
+    expect(getRevealedNotes(answer, 3)).toEqual(["bergamot", "rose", "musk"]);
   });
 
-  it("reveals heart after base is exhausted", () => {
-    expect(getRevealedNotes(answer, 3)).toEqual(["musk", "amber", "rose"]);
-  });
-
-  it("reveals top last, and clamps beyond the total note count", () => {
-    expect(getRevealedNotes(answer, 4)).toEqual(["musk", "amber", "rose", "bergamot"]);
-    expect(getRevealedNotes(answer, 99)).toEqual(["musk", "amber", "rose", "bergamot"]);
+  it("skips layers that have run out and keeps cycling the rest, clamping at the total", () => {
+    // top and heart are both exhausted after 3 reveals, so the 4th comes from base.
+    expect(getRevealedNotes(answer, 4)).toEqual(["bergamot", "rose", "musk", "amber"]);
+    expect(getRevealedNotes(answer, 99)).toEqual(["bergamot", "rose", "musk", "amber"]);
   });
 });

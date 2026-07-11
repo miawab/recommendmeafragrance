@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDailyAnswer } from "@/lib/dailyAnswer";
+import { getDailyAnswerByDifficulty, type DailyDifficulty } from "@/lib/dailyAnswer";
 import { buildNameMask } from "@/lib/detectiveMask";
 import { checkRateLimit, clientIp } from "@/lib/rateLimit";
-import { computeScentleFeedback, getRevealedNotes } from "@/lib/scentle";
+import { computeScentleFeedback, getRevealedNotes, totalNoteCount } from "@/lib/scentle";
 import { getFamousCatalog, getFullCatalog } from "@/lib/serverCatalog";
 
 export const runtime = "nodejs";
@@ -17,6 +17,7 @@ interface GuessBody {
   action: "guess" | "reveal" | "peek" | "meta" | "mask";
   guessId?: string;
   revealCount?: number;
+  difficulty?: DailyDifficulty;
 }
 
 export async function POST(req: NextRequest) {
@@ -32,7 +33,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
 
-  const { date, gameName, action, guessId, revealCount } = body;
+  const { date, gameName, action, guessId, revealCount, difficulty } = body;
   if (!date || !DATE_RE.test(date)) {
     return NextResponse.json({ error: "invalid_date" }, { status: 400 });
   }
@@ -48,12 +49,14 @@ export async function POST(req: NextRequest) {
   ) {
     return NextResponse.json({ error: "invalid_action" }, { status: 400 });
   }
+  const level: DailyDifficulty = difficulty === "hard" ? "hard" : "easy";
 
   const famous = getFamousCatalog();
   if (famous.length === 0) {
     return NextResponse.json({ error: "catalog_unavailable" }, { status: 503 });
   }
-  const answer = getDailyAnswer(famous, date, gameName);
+  const full = getFullCatalog();
+  const answer = getDailyAnswerByDifficulty(famous, full, date, gameName, level);
 
   if (action === "reveal") {
     return NextResponse.json({ answer }, { headers: { "Cache-Control": "public, max-age=300" } });
@@ -72,8 +75,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "invalid_action" }, { status: 400 });
     }
     // Hints for the info modes, plus the hangman shape of the name (zero
-    // letters revealed). Brand is a deliberate hint: the name mask alone
-    // made the game brutally hard.
+    // letters revealed) and the total note count so the client can price
+    // each reveal as a share of the total, instead of a flat per-note cost.
+    // Brand is a deliberate hint: the name mask alone made the game brutally hard.
     return NextResponse.json({
       year: answer.year,
       gender: answer.gender,
@@ -82,6 +86,7 @@ export async function POST(req: NextRequest) {
       brand: answer.brand,
       brandGroup: answer.brandGroup,
       nameMask: buildNameMask(answer.name, date, 0),
+      totalNotes: totalNoteCount(answer),
     });
   }
 
@@ -89,15 +94,16 @@ export async function POST(req: NextRequest) {
     if (gameName !== "detective") {
       return NextResponse.json({ error: "invalid_action" }, { status: 400 });
     }
-    const letters = Math.max(0, Math.min(3, Number(revealCount ?? 0)));
-    return NextResponse.json({ nameMask: buildNameMask(answer.name, date, letters) });
+    // revealCount here is how many "reveal next note" clicks the player has
+    // made, not a 0-3 stage; letter reveal grows with that count directly.
+    const clicks = Math.max(0, Math.min(200, Number(revealCount ?? 0)));
+    return NextResponse.json({ nameMask: buildNameMask(answer.name, date, clicks) });
   }
 
   // action === "guess"
   if (!guessId || typeof guessId !== "string") {
     return NextResponse.json({ error: "missing_guess" }, { status: 400 });
   }
-  const full = getFullCatalog();
   const guess = full.find((p) => p.id === guessId);
   if (!guess) {
     return NextResponse.json({ error: "unknown_perfume" }, { status: 400 });

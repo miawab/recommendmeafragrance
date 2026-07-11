@@ -6,14 +6,20 @@ import { seededHash, shuffleDeterministic } from "./seededRandom";
  *
  * Reveals are percentage-based rather than a fixed letter count, so short
  * and long names feel equally hinted: whole letters (all occurrences,
- * hangman-style) are uncovered in a deterministic per-day order until the
- * revealed share of the name's letter positions reaches the stage's
- * percentage.
+ * hangman-style) are uncovered in a deterministic per-day order. The
+ * percentage grows with how many times the player has hit "reveal next
+ * note" rather than with score, so it can't be gamed by wrong guesses and
+ * scales naturally with however many notes a perfume has.
  */
-export const REVEAL_STAGE_PCTS = [0, 0.15, 0.3, 0.45];
+export const PCT_PER_REVEAL = 0.07;
+export const MAX_REVEAL_PCT = 0.85;
 
-export function buildNameMask(name: string, date: string, stage: number): string {
-  const pct = REVEAL_STAGE_PCTS[Math.max(0, Math.min(REVEAL_STAGE_PCTS.length - 1, stage))];
+export function revealPctFor(revealCount: number): number {
+  return Math.min(MAX_REVEAL_PCT, Math.max(0, revealCount) * PCT_PER_REVEAL);
+}
+
+export function buildNameMask(name: string, date: string, revealCount: number): string {
+  const pct = revealPctFor(revealCount);
 
   const letterPositions = Array.from(name.toLowerCase()).filter((ch) => /[a-z0-9]/.test(ch));
   const counts = new Map<string, number>();

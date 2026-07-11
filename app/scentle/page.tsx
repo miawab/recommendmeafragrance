@@ -9,6 +9,7 @@ import ScentleRow from "@/components/ScentleRow";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
 import { loadFullCatalog } from "@/lib/catalog";
+import type { DailyDifficulty } from "@/lib/dailyAnswer";
 import type { ScentleFeedback } from "@/lib/scentle";
 import { buildShareGrid } from "@/lib/scentle";
 import {
@@ -25,6 +26,7 @@ import { useOffers } from "@/lib/useOffers";
 
 const MAX_GUESSES = 6;
 const GAME = "scentle";
+const DIFFICULTY_KEY = "rmf:scentle:difficulty";
 
 interface DayState {
   guesses: string[];
@@ -43,31 +45,42 @@ export default function ScentlePage() {
   const [state, setState] = useState<DayState>(EMPTY_STATE);
   const [streak, setStreak] = useState<StreakState>(EMPTY_STREAK);
   const [copyLabel, setCopyLabel] = useState("Copy share card");
+  const [difficulty, setDifficulty] = useState<DailyDifficulty>("easy");
   const offers = useOffers();
+  const historyKey = `${date}:${difficulty}`;
 
   useEffect(() => {
     loadFullCatalog().then(setCatalog);
     setStreak(getStreak(GAME));
-    const saved = getHistory(GAME)[date] as DayState | undefined;
+    const savedDifficulty = window.localStorage.getItem(DIFFICULTY_KEY);
+    if (savedDifficulty === "easy" || savedDifficulty === "hard") setDifficulty(savedDifficulty);
+  }, []);
+
+  // Today's puzzle for the current difficulty: easy and hard are different
+  // fragrances, each with its own saved state.
+  useEffect(() => {
+    const saved = getHistory(GAME)[historyKey] as DayState | undefined;
     if (saved) {
       setState(saved);
     } else {
-      track("game_start", { game: GAME, date });
+      setState(EMPTY_STATE);
+      track("game_start", { game: GAME, date, difficulty });
     }
-  }, [date]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date, difficulty, historyKey]);
 
   useEffect(() => {
     if (state.completed && !state.won && !state.answerId) {
       fetch("/api/guess", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date, gameName: GAME, action: "reveal" }),
+        body: JSON.stringify({ date, gameName: GAME, action: "reveal", difficulty }),
       })
         .then((r) => r.json())
         .then((data: { answer: PerfumeEntry }) => {
           const next = { ...state, answerId: data.answer.id };
           setState(next);
-          setHistory(GAME, date, next);
+          setHistory(GAME, historyKey, next);
           addToShelf(data.answer.id, GAME);
         });
     }
@@ -77,12 +90,18 @@ export default function ScentlePage() {
   const guessedIds = new Set(state.guesses);
   const answer = state.answerId ? catalog.find((p) => p.id === state.answerId) : undefined;
 
+  function changeDifficulty(next: DailyDifficulty) {
+    if (next === difficulty) return;
+    setDifficulty(next);
+    window.localStorage.setItem(DIFFICULTY_KEY, next);
+  }
+
   async function handleGuess(perfume: PerfumeEntry) {
     if (state.completed) return;
     const res = await fetch("/api/guess", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ date, gameName: GAME, action: "guess", guessId: perfume.id }),
+      body: JSON.stringify({ date, gameName: GAME, action: "guess", guessId: perfume.id, difficulty }),
     });
     const data: { feedback: ScentleFeedback; answer?: PerfumeEntry } = await res.json();
 
@@ -99,11 +118,11 @@ export default function ScentlePage() {
       answerId: won ? perfume.id : undefined,
     };
     setState(next);
-    setHistory(GAME, date, next);
+    setHistory(GAME, historyKey, next);
 
     if (completed) {
       setStreak(recordDailyPlay(GAME, date, won));
-      track("game_complete", { game: GAME, won, guessCount: guesses.length });
+      track("game_complete", { game: GAME, won, guessCount: guesses.length, difficulty });
       if (won) addToShelf(perfume.id, GAME);
     }
   }
@@ -126,7 +145,7 @@ export default function ScentlePage() {
         </p>
       </div>
 
-      <div className="flex items-center gap-5 text-base font-bold text-ink-900">
+      <div className="flex flex-wrap items-center gap-5 text-base font-bold text-ink-900">
         <span>
           {state.guesses.length} of {MAX_GUESSES} guesses used
         </span>
@@ -149,8 +168,27 @@ export default function ScentlePage() {
             <li>
               <strong>Notes</strong>: how many top/heart/base notes your guess shares with the answer.
             </li>
+            <li>
+              <strong>Easy</strong> picks a famous, well-known bottle. <strong>Hard</strong> digs into
+              the deeper catalog.
+            </li>
           </ul>
         </InfoTooltip>
+        <div className="ml-auto flex gap-1.5 rounded-full border-2 border-ink-950/10 bg-cream-100 p-1">
+          {(["easy", "hard"] as DailyDifficulty[]).map((level) => (
+            <button
+              key={level}
+              onClick={() => changeDifficulty(level)}
+              className={`tap-target rounded-full px-4 py-1.5 text-sm font-extrabold capitalize transition-all ${
+                difficulty === level
+                  ? "bg-amber-400 text-ink-950 shadow-card"
+                  : "text-ink-400 hover:text-ink-950"
+              }`}
+            >
+              {level}
+            </button>
+          ))}
+        </div>
       </div>
 
       {!state.completed && (

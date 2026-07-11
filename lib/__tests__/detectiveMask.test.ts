@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildNameMask } from "../detectiveMask";
+import { buildNameMask, MAX_REVEAL_PCT, revealPctFor } from "../detectiveMask";
 
 function revealedShare(name: string, mask: string): number {
   const chars = Array.from(name);
@@ -13,21 +13,37 @@ function revealedShare(name: string, mask: string): number {
   return shown / letters;
 }
 
+describe("revealPctFor", () => {
+  it("is zero with no notes revealed yet", () => {
+    expect(revealPctFor(0)).toBe(0);
+  });
+
+  it("grows by roughly 6-8% per note revealed", () => {
+    expect(revealPctFor(1)).toBeCloseTo(0.07, 5);
+    expect(revealPctFor(2)).toBeCloseTo(0.14, 5);
+    expect(revealPctFor(4)).toBeCloseTo(0.28, 5);
+  });
+
+  it("caps out instead of climbing past the max", () => {
+    expect(revealPctFor(1000)).toBe(MAX_REVEAL_PCT);
+  });
+});
+
 describe("buildNameMask", () => {
-  it("hides all letters at stage 0 but keeps the shape", () => {
+  it("hides all letters with no reveals yet but keeps the shape", () => {
     const mask = buildNameMask("La Vie Est Belle", "2026-07-12", 0);
     expect(mask).toBe("__ ___ ___ _____");
   });
 
-  it("is deterministic for the same day", () => {
-    const a = buildNameMask("Black Opium", "2026-07-12", 2);
-    const b = buildNameMask("Black Opium", "2026-07-12", 2);
+  it("is deterministic for the same day and reveal count", () => {
+    const a = buildNameMask("Black Opium", "2026-07-12", 4);
+    const b = buildNameMask("Black Opium", "2026-07-12", 4);
     expect(a).toBe(b);
   });
 
   it("reveals all occurrences of a chosen letter, hangman style", () => {
     const name = "Coco Noir";
-    const mask = buildNameMask(name, "2026-07-12", 3);
+    const mask = buildNameMask(name, "2026-07-12", 5);
     const chars = Array.from(name.toLowerCase());
     Array.from(mask).forEach((mch, i) => {
       if (mch === "_" || !/[a-z0-9]/i.test(name[i])) return;
@@ -38,18 +54,10 @@ describe("buildNameMask", () => {
     });
   });
 
-  it("scales reveals with name length via percentage coverage", () => {
-    for (const name of ["Sauvage", "Stronger With You Absolutely Intense"]) {
-      const share = revealedShare(name, buildNameMask(name, "2026-07-12", 3));
-      expect(share).toBeGreaterThan(0.3);
-      expect(share).toBeLessThan(0.85);
-    }
-  });
-
-  it("reveals more at each stage", () => {
+  it("reveals more letters as the reveal count climbs, tied to note reveals not score", () => {
     const name = "Emporio Armani Stronger With You";
-    const shares = [0, 1, 2, 3].map((s) =>
-      revealedShare(name, buildNameMask(name, "2026-07-12", s))
+    const shares = [0, 2, 5, 10].map((n) =>
+      revealedShare(name, buildNameMask(name, "2026-07-12", n))
     );
     expect(shares[0]).toBe(0);
     expect(shares[1]).toBeGreaterThan(0);

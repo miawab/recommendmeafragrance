@@ -129,11 +129,11 @@ export default function Home() {
         </Link>
         <Link
           href="/chat"
-          className="group tap-target rounded-3xl bg-amber-400 p-6 text-ink-950 shadow-card hover:shadow-card-lg hover:-translate-y-1 active:scale-[0.98] transition-all"
+          className="group tap-target rounded-3xl bg-ink-950 p-6 text-cream-100 shadow-card hover:shadow-card-lg hover:-translate-y-1 active:scale-[0.98] transition-all"
         >
-          <GameIcon icon={Sparkles} tone="bg-ink-950 text-cream-100" className="mb-3" />
+          <GameIcon icon={Sparkles} tone="bg-cream-100 text-ink-950" className="mb-3" />
           <p className="font-display text-2xl font-extrabold">Ask the Concierge</p>
-          <p className="text-base font-medium text-ink-900/70 mt-1.5">Tell it what you like, get picks.</p>
+          <p className="text-base font-medium text-cream-300/70 mt-1.5">Tell it what you like, get picks.</p>
         </Link>
       </div>
     </div>

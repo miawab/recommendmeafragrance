@@ -40,11 +40,13 @@ export default function PrivacyPage() {
 
       <Section title="What we store if you create an account">
         <p>
-          Accounts are optional. If you create one, we store your username, a securely hashed
-          version of your password (we never store or see the password itself), a login session
-          identifier, and a copy of your game progress so it can follow you across devices. That
-          is the complete list; we do not ask for or store your email, name, or any other
-          personal details.
+          Accounts are optional. With a username account we store your username, a securely
+          hashed version of your password (we never store or see the password itself), a login
+          session identifier, and a copy of your game progress so it can follow you across
+          devices. If you sign in with Google instead, we store your Google account identifier,
+          your email address, and your first name for display, alongside the same session and
+          progress data; we never see your Google password and request no access to your Gmail,
+          contacts, or anything beyond basic profile info.
         </p>
         <p>
           Account data lives in a managed Redis database (Upstash). You can stop syncing at any

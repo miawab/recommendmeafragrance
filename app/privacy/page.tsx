@@ -54,11 +54,17 @@ export default function PrivacyPage() {
 
       <Section title="The Concierge chat">
         <p>
-          Messages you send to the Concierge are forwarded to Groq, our AI model provider, to
-          generate a reply. Do not include personal information in chat messages. We track daily
-          token usage counters (tied to your account if logged in, otherwise an anonymous
-          identifier) to keep the shared chat budget fair; the counters reset daily and we do not
-          keep chat transcripts.
+          Messages you send to the Concierge are forwarded to an AI model provider (Groq, or
+          Google if you supply your own Gemini key) to generate a reply. Do not include personal
+          information in chat messages. We track daily token usage counters per account to keep
+          the shared chat budget fair; the counters reset daily and we do not keep chat
+          transcripts.
+        </p>
+        <p>
+          If you optionally add your own Gemini API key, it is stored only in your browser&apos;s
+          local storage, sent along with your own chat requests, and used transiently to call
+          Google on your behalf. We never store or log it on our servers, and removing it in the
+          chat settings deletes it from your browser.
         </p>
       </Section>
 

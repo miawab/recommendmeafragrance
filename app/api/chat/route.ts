@@ -34,7 +34,16 @@ interface ChatMessage {
 
 interface ChatBody {
   messages: ChatMessage[];
+  geminiKey?: string;
 }
+
+// Bring-your-own-key: the key is held in the user's browser, forwarded per
+// request, used transiently for the upstream call, and never stored or
+// logged here. Google API keys start with "AIza".
+const GEMINI_KEY_RE = /^AIza[\w-]{20,80}$/;
+const GEMINI_ENDPOINT =
+  "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
+const GEMINI_MODEL = "gemini-2.5-flash";
 
 function todayUTC(): string {
   return new Date().toISOString().slice(0, 10);
@@ -48,13 +57,6 @@ function tomorrowMidnightISO(): string {
 }
 
 export async function POST(req: NextRequest) {
-  if (!process.env.GROQ_API_KEY) {
-    return NextResponse.json(
-      { error: "chat_unavailable", message: "Concierge isn't configured yet, missing GROQ_API_KEY." },
-      { status: 503 }
-    );
-  }
-
   let body: Partial<ChatBody>;
   try {
     body = await req.json();
@@ -90,6 +92,60 @@ export async function POST(req: NextRequest) {
   if (!sessionUsername) {
     return NextResponse.json({ error: "login_required" }, { status: 401 });
   }
+
+  // BYOK path: the user's own Gemini key pays for inference, so the shared
+  // daily budget and wrap-up states don't apply. Login and the per-IP rate
+  // limits above still do.
+  const geminiKey = typeof body.geminiKey === "string" ? body.geminiKey.trim() : "";
+  if (geminiKey) {
+    if (!GEMINI_KEY_RE.test(geminiKey)) {
+      return NextResponse.json({ error: "bad_gemini_key" }, { status: 400 });
+    }
+    const recent = messages.slice(-SLIDING_WINDOW);
+    let gRes: Response;
+    try {
+      gRes = await fetch(GEMINI_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${geminiKey}`,
+        },
+        body: JSON.stringify({
+          model: GEMINI_MODEL,
+          messages: [{ role: "system", content: SYSTEM_PROMPT }, ...recent],
+          max_tokens: 220,
+          temperature: 0.6,
+        }),
+      });
+    } catch {
+      return NextResponse.json({ error: "upstream_error" }, { status: 502 });
+    }
+    if (gRes.status === 400 || gRes.status === 401 || gRes.status === 403) {
+      return NextResponse.json({ error: "bad_gemini_key" }, { status: 400 });
+    }
+    if (!gRes.ok) {
+      return NextResponse.json({ error: "upstream_error" }, { status: 502 });
+    }
+    const gJson = (await gRes.json()) as {
+      choices?: { message?: { content?: string } }[];
+    };
+    const content = gJson.choices?.[0]?.message?.content ?? "";
+    return NextResponse.json({
+      state: "NORMAL",
+      reply: stripUrls(content),
+      recommendations: null,
+      remainingPct: 100,
+      byok: true,
+    });
+  }
+
+  if (!process.env.GROQ_API_KEY) {
+    return NextResponse.json(
+      { error: "chat_unavailable", message: "Concierge isn't configured yet, missing GROQ_API_KEY." },
+      { status: 503 }
+    );
+  }
+
   const userId = `user:${sessionUsername.toLowerCase()}`;
   const date = todayUTC();
   const kv = getKV();

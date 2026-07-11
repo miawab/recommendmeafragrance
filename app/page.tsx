@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Dices, FlaskConical, Heart, Search, Sparkles, SprayCan, TrendingUp, Trophy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import GameIcon from "@/components/GameIcon";
+import Mascot from "@/components/Mascot";
 import { loadCoreCatalog } from "@/lib/catalog";
 import { getHistory, getShelf } from "@/lib/shelf";
 import { todayUTC } from "@/lib/seededRandom";
@@ -61,7 +62,32 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-12">
-      <div>
+      {/* Home-only ambience: soft palette blobs + drifting sparkles, pinned
+          behind everything and inert to the pointer. */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute -right-24 -top-24 h-[420px] w-[420px] rounded-full bg-amber-200/40 blur-3xl" />
+        <div className="absolute -bottom-32 -left-24 h-[380px] w-[380px] rounded-full bg-cream-300/60 blur-3xl" />
+        <div className="absolute -left-10 top-1/3 h-56 w-56 rounded-full bg-amber-100/50 blur-2xl" />
+        {[
+          { top: "18%", left: "8%", size: 18, delay: "0s" },
+          { top: "12%", left: "78%", size: 14, delay: "1.6s" },
+          { top: "55%", left: "90%", size: 20, delay: "3.1s" },
+          { top: "72%", left: "12%", size: 12, delay: "4.4s" },
+          { top: "38%", left: "94%", size: 12, delay: "2.2s" },
+        ].map((s, i) => (
+          <svg
+            key={i}
+            className="bg-sparkle absolute text-amber-400/30"
+            style={{ top: s.top, left: s.left, width: s.size, height: s.size, animationDelay: s.delay }}
+            viewBox="0 0 16 16"
+            fill="currentColor"
+          >
+            <path d="M8 0 L9.8 6.2 L16 8 L9.8 9.8 L8 16 L6.2 9.8 L0 8 L6.2 6.2 Z" />
+          </svg>
+        ))}
+      </div>
+
+      <div className="relative md:pr-40">
         <p className="text-sm font-extrabold uppercase tracking-widest text-amber-600">
           six games. one nose.
         </p>
@@ -71,6 +97,7 @@ export default function Home() {
         <p className="text-lg font-medium text-ink-400 mt-3">
           Zero-cost games plus one AI concierge, and a shelf that fills up as you go.
         </p>
+        <Mascot className="mascot-bob absolute -right-2 top-4 hidden w-32 md:block" />
       </div>
 
       <div className="flex flex-col gap-4">

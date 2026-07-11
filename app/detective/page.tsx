@@ -38,9 +38,12 @@ interface AnswerMeta {
   nameMask: string;
 }
 
-/** Hangman letters unlock as the score drops: one at 700, two at 400, all
- * three at 300. Hitting 0 ends the game and reveals the answer. */
-function lettersForScore(score: number): number {
+/** Name-reveal stages unlock as the score drops; each stage uncovers a
+ * percentage of the name's letters (server-side), so short and long names
+ * are hinted equally. Hitting 0 ends the game and reveals the answer. */
+const STAGE_PCT_LABELS = [0, 15, 30, 45];
+
+function revealStageForScore(score: number): number {
   if (score <= 300) return 3;
   if (score <= 400) return 2;
   if (score <= 700) return 1;
@@ -98,18 +101,18 @@ export default function NoteDetectivePage() {
       });
   }, [date]);
 
-  const lettersRevealed = lettersForScore(state.score);
+  const revealStage = revealStageForScore(state.score);
 
   useEffect(() => {
-    if (lettersRevealed === 0) return;
+    if (revealStage === 0) return;
     fetch("/api/guess", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ date, gameName: GAME, action: "mask", revealCount: lettersRevealed }),
+      body: JSON.stringify({ date, gameName: GAME, action: "mask", revealCount: revealStage }),
     })
       .then((r) => r.json())
       .then((data: { nameMask: string }) => setNameMask(data.nameMask));
-  }, [date, lettersRevealed]);
+  }, [date, revealStage]);
 
   function changeMode(next: InfoMode) {
     setMode(next);
@@ -228,8 +231,9 @@ export default function NoteDetectivePage() {
             <li>A wrong guess costs <strong>{WRONG_GUESS_COST}</strong> points.</li>
             <li>Notes reveal <strong>base first</strong> (hardest to place), then heart, then top.</li>
             <li>
-              Letters of the name unlock as your score drops: one at <strong>700</strong>, two at{" "}
-              <strong>400</strong>, three at <strong>300</strong>. At 0 the answer is revealed.
+              The name uncovers as your score drops: <strong>15%</strong> at 700,{" "}
+              <strong>30%</strong> at 400, <strong>45%</strong> at 300. At 0 the answer is
+              revealed.
             </li>
           </ul>
         </InfoTooltip>
@@ -238,7 +242,7 @@ export default function NoteDetectivePage() {
       {nameMask && (
         <div className="rounded-3xl border-2 border-ink-950/8 bg-cream-100 p-5 shadow-card">
           <p className="mb-2 text-[11px] font-extrabold uppercase tracking-wider text-ink-400">
-            The name ({lettersRevealed}/3 letters revealed)
+            The name ({STAGE_PCT_LABELS[revealStage]}% revealed)
           </p>
           <p className="font-display text-2xl font-extrabold tracking-[0.25em] text-ink-950 sm:text-3xl">
             {nameMask}

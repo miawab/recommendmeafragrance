@@ -2,17 +2,35 @@ import { seededHash, shuffleDeterministic } from "./seededRandom";
 
 /**
  * Hangman-style mask for Note Detective. Letters/digits hide as "_",
- * spaces and punctuation show through so the name's shape reads. Revealed
- * letters are chosen deterministically per day (same for every player) and
- * revealing a letter exposes all its occurrences, hangman-style.
+ * spaces and punctuation show through so the name's shape reads.
+ *
+ * Reveals are percentage-based rather than a fixed letter count, so short
+ * and long names feel equally hinted: whole letters (all occurrences,
+ * hangman-style) are uncovered in a deterministic per-day order until the
+ * revealed share of the name's letter positions reaches the stage's
+ * percentage.
  */
-export function buildNameMask(name: string, date: string, lettersRevealed: number): string {
-  const unique: string[] = [];
-  for (const ch of name.toLowerCase()) {
-    if (/[a-z0-9]/.test(ch) && !unique.includes(ch)) unique.push(ch);
+export const REVEAL_STAGE_PCTS = [0, 0.15, 0.3, 0.45];
+
+export function buildNameMask(name: string, date: string, stage: number): string {
+  const pct = REVEAL_STAGE_PCTS[Math.max(0, Math.min(REVEAL_STAGE_PCTS.length - 1, stage))];
+
+  const letterPositions = Array.from(name.toLowerCase()).filter((ch) => /[a-z0-9]/.test(ch));
+  const counts = new Map<string, number>();
+  for (const ch of letterPositions) counts.set(ch, (counts.get(ch) ?? 0) + 1);
+
+  const order = shuffleDeterministic(
+    [...counts.keys()],
+    seededHash(`${date}:detective-letters`)
+  );
+
+  const revealed = new Set<string>();
+  let covered = 0;
+  for (const letter of order) {
+    if (letterPositions.length === 0 || covered / letterPositions.length >= pct) break;
+    revealed.add(letter);
+    covered += counts.get(letter) ?? 0;
   }
-  const order = shuffleDeterministic(unique, seededHash(`${date}:detective-letters`));
-  const revealed = new Set(order.slice(0, Math.max(0, Math.min(lettersRevealed, order.length))));
 
   return Array.from(name)
     .map((ch) => {

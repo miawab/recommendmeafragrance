@@ -183,6 +183,10 @@ textarea {
   animation: sparkle-drift 4.2s ease-in-out infinite;
 }
 
+/* The mascot's bob/puff/expression animations are small and decorative
+ * (not large-motion or parallax content), so they're deliberately exempted
+ * below and keep playing even with Reduce Motion on; everything else still
+ * respects it. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -191,6 +195,19 @@ textarea {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .mascot-bob {
+    animation-duration: 2.6s !important;
+    animation-iteration-count: infinite !important;
+  }
+  .mascot-puff {
+    animation-duration: 1.3s !important;
+    animation-iteration-count: infinite !important;
+  }
+  .mascot-face {
+    animation-duration: 0.2s !important;
+    animation-iteration-count: 1 !important;
   }
 }
 

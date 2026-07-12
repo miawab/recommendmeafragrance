@@ -24,7 +24,7 @@ const DAILY_GAMES = [
     key: "detective",
     href: "/detective",
     label: "Note Detective",
-    blurb: "Notes reveal from the base up.",
+    blurb: "Notes reveal top, heart, base.",
     icon: Search,
     tone: "bg-ink-400 text-cream-100",
   },

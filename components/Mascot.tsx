@@ -7,12 +7,12 @@ const EXPRESSIONS = [
   "starry",
   "grin",
   "sleepy",
+  "content",
   "surprised",
-  "love",
-  "cool",
   "laughing",
-  "shy",
   "smirk",
+  "shy",
+  "starstruck",
 ] as const;
 type Expression = (typeof EXPRESSIONS)[number];
 
@@ -58,23 +58,33 @@ function Face({ expression }: { expression: Expression }) {
         </>
       );
     case "grin":
+      // Same open eyes as happy, a bigger open smile: happy turned up a notch.
       return (
         <>
-          <path d="M26.5 34.5 Q28 38 29.5 34.5" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
-          <path d="M34.5 34.5 Q36 38 37.5 34.5" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
-          <path
-            d="M26 41 Q32 47 38 41 Q32 44.5 26 41 Z"
-            fill="#4B2E2B"
-          />
+          <circle cx="28" cy="36" r="1.9" fill="#4B2E2B" />
+          <circle cx="36" cy="36" r="1.9" fill="#4B2E2B" />
+          <path d="M26 41 Q32 47 38 41 Q32 44.5 26 41 Z" fill="#4B2E2B" />
           {BLUSH}
         </>
       );
     case "sleepy":
+      // Flat drowsy eyes, flat mouth: half-asleep, no smile.
       return (
         <>
-          <path d="M25.5 36.5 Q28 35 30.5 36.5" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
-          <path d="M33.5 36.5 Q36 35 38.5 36.5" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
-          <path d="M29 41.5 Q32 43 35 41.5" stroke="#4B2E2B" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M25.5 36.5 L30.5 36.5" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
+          <path d="M33.5 36.5 L38.5 36.5" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
+          <path d="M29 41.5 L35 41.5" stroke="#4B2E2B" strokeWidth="1.8" strokeLinecap="round" />
+          {BLUSH}
+        </>
+      );
+    case "content":
+      // Closed, peaceful smiling eyes (upward arcs) over happy's same smile.
+      return (
+        <>
+          <path d="M25.5 35.8 Q28 33.5 30.5 35.8" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
+          <path d="M33.5 35.8 Q36 33.5 38.5 35.8" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
+          <path d="M27.5 41 Q32 45 36.5 41" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
+          {BLUSH}
         </>
       );
     case "surprised":
@@ -86,43 +96,36 @@ function Face({ expression }: { expression: Expression }) {
           {BLUSH}
         </>
       );
-    case "love":
-      return (
-        <>
-          <path
-            d="M28 35.5 C28 34.3 29 33.6 29.9 34.2 C30.5 34.6 30.7 35.2 30.7 35.2 C30.7 35.2 30.9 34.6 31.5 34.2 C32.4 33.6 33.4 34.3 33.4 35.5 C33.4 37 30.7 38.5 30.7 38.5 C30.7 38.5 28 37 28 35.5 Z"
-            fill="#C08552"
-          />
-          <path
-            d="M33.6 35.5 C33.6 34.3 34.6 33.6 35.5 34.2 C36.1 34.6 36.3 35.2 36.3 35.2 C36.3 35.2 36.5 34.6 37.1 34.2 C38 33.6 39 34.3 39 35.5 C39 37 36.3 38.5 36.3 38.5 C36.3 38.5 33.6 37 33.6 35.5 Z"
-            fill="#C08552"
-          />
-          <path d="M27.5 41 Q32 45 36.5 41" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
-        </>
-      );
-    case "cool":
-      return (
-        <>
-          <rect x="24.5" y="34.5" width="6" height="3.4" rx="1.2" fill="#4B2E2B" />
-          <rect x="33.5" y="34.5" width="6" height="3.4" rx="1.2" fill="#4B2E2B" />
-          <path d="M30.5 36 L33.5 36" stroke="#4B2E2B" strokeWidth="1.4" />
-          <path d="M27.5 41.5 Q32 44 36.5 41.5" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
-        </>
-      );
     case "laughing":
+      // Squeezed-shut chevron eyes over grin's big open mouth: laughing hard.
       return (
         <>
-          <path d="M25.5 37 Q28 33.5 30.5 37" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
-          <path d="M33.5 37 Q36 33.5 38.5 37" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
-          <path d="M25.5 41 Q32 48 38.5 41 Q32 46 25.5 41 Z" fill="#4B2E2B" />
+          <path
+            d="M25.5 37.5 L28 34.5 L30.5 37.5"
+            stroke="#4B2E2B"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+          <path
+            d="M33.5 37.5 L36 34.5 L38.5 37.5"
+            stroke="#4B2E2B"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+          <path d="M26 41 Q32 47 38 41 Q32 44.5 26 41 Z" fill="#4B2E2B" />
           {BLUSH}
         </>
       );
     case "shy":
+      // Small, downcast dot eyes, a tiny smile, and extra-rosy cheeks.
       return (
         <>
-          <path d="M25.5 36.5 Q28 35 30.5 36.5" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
-          <path d="M33.5 36.5 Q36 35 38.5 36.5" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
+          <circle cx="28.5" cy="37" r="1.6" fill="#4B2E2B" />
+          <circle cx="35.5" cy="37" r="1.6" fill="#4B2E2B" />
           <path d="M30 41.5 Q32 43 34 41.5" stroke="#4B2E2B" strokeWidth="1.8" strokeLinecap="round" />
           <circle cx="24" cy="40" r="2.3" fill="#C08552" opacity="0.75" />
           <circle cx="40" cy="40" r="2.3" fill="#C08552" opacity="0.75" />
@@ -134,6 +137,22 @@ function Face({ expression }: { expression: Expression }) {
           <circle cx="28" cy="36" r="1.9" fill="#4B2E2B" />
           <circle cx="36" cy="36" r="1.9" fill="#4B2E2B" />
           <path d="M28 41.5 Q34 44.5 37.5 40.5" stroke="#4B2E2B" strokeWidth="2" strokeLinecap="round" />
+          {BLUSH}
+        </>
+      );
+    case "starstruck":
+      // Same stars as starry, a big open grin instead of a calm dot mouth.
+      return (
+        <>
+          <path
+            d="M28 33.2 L28.9 35.1 L30.8 36 L28.9 36.9 L28 38.8 L27.1 36.9 L25.2 36 L27.1 35.1 Z"
+            fill="#4B2E2B"
+          />
+          <path
+            d="M36 33.2 L36.9 35.1 L38.8 36 L36.9 36.9 L36 38.8 L35.1 36.9 L33.2 36 L35.1 35.1 Z"
+            fill="#4B2E2B"
+          />
+          <path d="M26 41 Q32 47 38 41 Q32 44.5 26 41 Z" fill="#4B2E2B" />
           {BLUSH}
         </>
       );

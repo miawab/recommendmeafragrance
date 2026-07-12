@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 const EXPRESSIONS = [
   "sparkle",
   "happy",
@@ -152,19 +150,16 @@ function Face({ expression }: { expression: Expression }) {
   }
 }
 
+// One 12th of the shared mascot-expr-cycle animation (13.2s / 12 faces).
+const SLICE_SECONDS = 13.2 / EXPRESSIONS.length;
+
 /** The logo bottle come to life: cycles through expressions (starting from
- * the logo's own sparkle) and asks the Concierge's opening question. */
+ * the logo's own sparkle) and asks the Concierge's opening question. Every
+ * expression is rendered at once, each staggered by a positive animation-delay
+ * (face i waits i slices before its turn, then loops every full cycle after),
+ * so the cycle keeps running via the compositor even if the tab's JS timers
+ * get throttled or frozen in the background. */
 export default function Mascot({ className }: { className?: string }) {
-  const [idx, setIdx] = useState(0);
-  const expression = EXPRESSIONS[idx];
-
-  useEffect(() => {
-    // The brand-mark sparkle lingers a touch; the faces flip through quicker.
-    const holdMs = expression === "sparkle" ? 1500 : 1000;
-    const t = setTimeout(() => setIdx((i) => (i + 1) % EXPRESSIONS.length), holdMs);
-    return () => clearTimeout(t);
-  }, [expression]);
-
   return (
     <div className={className}>
       <div className="relative mb-1 -rotate-2 rounded-2xl border-2 border-ink-950/10 bg-white px-3 py-1.5 text-center text-sm font-extrabold lowercase text-ink-950 shadow-card">
@@ -203,10 +198,15 @@ export default function Mascot({ className }: { className?: string }) {
         <rect x="28" y="12" width="8" height="7" rx="2.5" fill="#8C5A3C" />
         <rect x="13" y="17" width="38" height="42" rx="15" fill="#C08552" />
         <circle cx="32" cy="38" r="11" fill="#FFF8F0" />
-        {/* key remount restarts the pop-in on every expression change */}
-        <g key={expression} className="mascot-face">
-          <Face expression={expression} />
-        </g>
+        {EXPRESSIONS.map((expression, i) => (
+          <g
+            key={expression}
+            className="mascot-face"
+            style={{ animationDelay: `${i * SLICE_SECONDS}s` }}
+          >
+            <Face expression={expression} />
+          </g>
+        ))}
       </svg>
     </div>
   );

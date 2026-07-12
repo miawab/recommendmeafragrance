@@ -150,22 +150,40 @@ textarea {
   animation: puff-fade 1.3s ease-in-out infinite;
 }
 
-/* Each expression swap remounts the face group; this pops the new face in.
-   transform-box makes scale() originate from the face itself, not the SVG. */
-@keyframes face-pop {
-  from {
-    transform: scale(0.4);
+/* All 12 expressions are rendered as siblings and cycle purely via CSS
+ * (each on its own animation-delay offset into this one shared keyframe),
+ * rather than a JS setTimeout chain: real browsers throttle or fully freeze
+ * JS timers in backgrounded/power-saving tabs, which silently stalled the
+ * old approach. CSS animations don't have that problem. transform-box makes
+ * scale() originate from the face itself, not the SVG. Each face is visible
+ * (with a quick pop-in/out) for one 12th of MASCOT_EXPR_CYCLE, in order. */
+@keyframes mascot-expr-cycle {
+  0%,
+  100% {
     opacity: 0;
+    transform: scale(0.4);
   }
-  to {
-    transform: scale(1);
+  1% {
     opacity: 1;
+    transform: scale(1);
+  }
+  7.3% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  8.3% {
+    opacity: 0;
+    transform: scale(1);
   }
 }
 .mascot-face {
   transform-box: fill-box;
   transform-origin: center;
-  animation: face-pop 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  /* "both" fill-mode is required: each face has a positive animation-delay
+     (its turn in the sequence), and without it the element would show its
+     un-animated default (fully opaque) instead of the keyframe's opacity:0
+     during that wait, making every face visible at once. */
+  animation: mascot-expr-cycle 13.2s ease infinite both;
 }
 
 @keyframes sparkle-drift {
@@ -206,8 +224,8 @@ textarea {
     animation-iteration-count: infinite !important;
   }
   .mascot-face {
-    animation-duration: 0.2s !important;
-    animation-iteration-count: 1 !important;
+    animation-duration: 13.2s !important;
+    animation-iteration-count: infinite !important;
   }
 }
 

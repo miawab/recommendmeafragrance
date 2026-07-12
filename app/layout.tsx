@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Baloo_2, Nunito } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
@@ -33,6 +34,7 @@ export default function RootLayout({
         <SiteHeader />
         <main className="flex-1 w-full max-w-3xl mx-auto px-4 pb-16 pt-6">{children}</main>
         <SiteFooter />
+        <Analytics />
       </body>
     </html>
   );

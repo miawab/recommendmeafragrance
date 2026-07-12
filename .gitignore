@@ -31,6 +31,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local design assets (logos, mascot art, icons, etc.) — not pushed
+/assets/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

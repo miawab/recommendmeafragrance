@@ -2,10 +2,12 @@ const isDev = process.env.NODE_ENV !== "production";
 
 const CSP = [
   "default-src 'self'",
-  // Next.js dev mode's Fast Refresh/HMR runtime evals and injects inline
-  // scripts, so both are only needed in development, never in production
-  // builds (the app has no inline <script> tags or dangerouslySetInnerHTML).
-  `script-src 'self'${isDev ? " 'unsafe-inline' 'unsafe-eval'" : ""}`,
+  // 'unsafe-inline' is required in BOTH environments: the Next.js App
+  // Router streams Server Component payloads to the client via inline
+  // `<script>self.__next_f.push(...)</script>` tags, and blocking those
+  // breaks hydration sitewide (pages render but nothing is interactive).
+  // 'unsafe-eval' is dev-only, for Fast Refresh/HMR.
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   // Inline style attributes (animation delays, computed widths/transforms)
   // are used throughout for dynamic, non-user-controlled values, so
   // 'unsafe-inline' stays on for style-src in both environments.
